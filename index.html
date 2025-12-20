@@ -3,106 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestión de Innovación | Dashboard</title>
+    <title>Gestión de Innovación Regional | Control Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
-        .input-focus { transition: all 0.3s ease; }
-        .input-focus:focus { border-color: #2563eb; ring: 2px; ring-color: #bfdbfe; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen">
+<body class="bg-slate-100 min-h-screen pb-12">
+    <div class="max-w-4xl mx-auto pt-10 px-4">
+        <div class="bg-white shadow-2xl rounded-3xl overflow-hidden border border-slate-200">
+            <div class="bg-blue-700 p-8 text-white">
+                <h1 class="text-3xl font-bold">Registro Estratégico de Innovación</h1>
+                <p class="opacity-80 mt-2">Seguimiento y control de proyectos regionales</p>
+            </div>
 
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center gap-2">
-                    <div class="bg-blue-600 p-2 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
+            <form id="innovationForm" class="p-8 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1 text-blue-700">Líder del Proyecto</label>
+                        <input type="text" name="lider" required class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
                     </div>
-                    <span class="text-xl font-bold text-slate-800 tracking-tight">Innova<span class="text-blue-600">Corp</span></span>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1 text-blue-700">Cédula</label>
+                        <input type="text" name="cedula" placeholder="000-0000000-0" required class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1 text-blue-700">Teléfono</label>
+                        <input type="tel" name="telefono" placeholder="809-000-0000" required class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
                 </div>
-                <div class="text-sm font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
-                    Panel de Registro v1.0
+
+                <hr class="border-slate-100">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Nombre del Proyecto de Innovación</label>
+                        <input type="text" name="proyecto" required class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Regional</label>
+                        <select name="regional" required class="w-full p-3 border rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="Metropolitana">Metropolitana</option>
+                            <option value="Valdesia">Valdesia</option>
+                            <option value="Cibao Norte">Cibao Norte</option>
+                            <option value="Cibao Sur">Cibao Sur</option>
+                            <option value="Oriental">Oriental</option>
+                            <option value="Regional Sur">Regional Sur</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Prioridad</label>
+                        <select name="prioridad" class="w-full p-3 border rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="Alta">🔴 Alta (Crítico)</option>
+                            <option value="Media">🟡 Media</option>
+                            <option value="Baja">🟢 Baja</option>
+                        </select>
+                    </div>
                 </div>
+
+                <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="block text-sm font-bold text-blue-800">Estado de Avance del Proyecto</label>
+                        <span id="rangeValue" class="bg-blue-600 text-white px-4 py-1 rounded-full font-bold">0%</span>
+                    </div>
+                    <input type="range" name="progreso" min="0" max="100" value="0" 
+                        class="w-full h-3 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-700"
+                        oninput="document.getElementById('rangeValue').innerText = this.value + '%'">
+                    <div class="flex justify-between text-xs text-blue-500 mt-2 font-medium">
+                        <span>Ideación</span>
+                        <span>Desarrollo</span>
+                        <span>Implementación</span>
+                        <span>Finalizado</span>
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-4 rounded-2xl shadow-lg transition-all transform hover:-translate-y-1">
+                    Guardar y Actualizar Proyecto
+                </button>
+            </form>
+
+            <div id="successMsg" class="hidden m-8 p-4 bg-green-100 text-green-800 border border-green-200 rounded-xl text-center font-bold">
+                ✅ Datos sincronizados correctamente en el Dashboard central.
             </div>
         </div>
-    </nav>
+    </div>
 
-    <main class="max-w-4xl mx-auto py-10 px-4">
-        <div class="mb-10 text-center">
-            <h2 class="text-3xl font-extrabold text-slate-900 sm:text-4xl">Registro de Proyectos de Innovación</h2>
-            <p class="mt-3 text-lg text-slate-600">Capture nuevas iniciativas para el seguimiento estratégico por regionales.</p>
-        </div>
+    <script>
+        // REEMPLAZA CON TU NUEVA URL DE GOOGLE APPS SCRIPT
+        const SCRIPT_URL = 'ESCRIBE_AQUI_TU_NUEVO_LINK';
+        const form = document.getElementById('innovationForm');
 
-        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
-            <div class="p-8">
-                <form id="innovationForm" class="space-y-6">
-                    
-                    <div class="border-b border-slate-100 pb-6">
-                        <h3 class="text-sm font-bold uppercase tracking-wider text-blue-600 mb-4">1. Identificación del Proyecto</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-semibold text-slate-700 mb-1">Nombre del Proyecto</label>
-                                <input type="text" name="proyecto" required placeholder="Ej. Digitalización de procesos en almacén" 
-                                    class="w-full p-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-slate-700 mb-1">Líder responsable</label>
-                                <input type="text" name="lider" required placeholder="Nombre completo" 
-                                    class="w-full p-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-slate-700 mb-1">Regional</label>
-                                <select name="regional" required class="w-full p-3 border border-slate-300 rounded-lg bg-white outline-none focus:ring-2 focus:ring-blue-500 transition">
-                                    <option value="" disabled selected>Seleccione regional...</option>
-                                    <option value="Metropolitana">Metropolitana</option>
-                                    <option value="Valdesia">Valdesia</option>
-                                    <option value="Cibao Norte">Cibao Norte</option>
-                                    <option value="Cibao Sur">Cibao Sur</option>
-                                    <option value="Oriental">Oriental</option>
-                                    <option value="Regional Sur">Regional Sur</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerText = 'Sincronizando...';
 
-                    <div class="border-b border-slate-100 pb-6">
-                        <h3 class="text-sm font-bold uppercase tracking-wider text-blue-600 mb-4">2. Valor Estratégico</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-semibold text-slate-700 mb-1">Tipo de Innovación</label>
-                                <select name="tipo" class="w-full p-3 border border-slate-300 rounded-lg bg-white outline-none focus:ring-2 focus:ring-blue-500 transition">
-                                    <option value="Incremental">Incremental (Mejora)</option>
-                                    <option value="Radical">Radical (Nuevo Proceso)</option>
-                                    <option value="Disruptiva">Disruptiva (Nuevo Mercado)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-slate-700 mb-1">Impacto Esperado (KPI)</label>
-                                <input type="text" name="impacto" placeholder="Ej. Ahorro de 10% mensual" 
-                                    class="w-full p-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition">
-                            </div>
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-semibold text-slate-700 mb-1">Justificación del proyecto</label>
-                                <textarea name="descripcion" rows="3" placeholder="¿Por qué este proyecto es importante?" 
-                                    class="w-full p-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="pt-4">
-                        <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-blue-200 transform hover:-translate-y-1 flex items-center justify-center gap-2">
-                            <span>Enviar a Revisión Estratégica</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                    </div>
-                </form>
-
-                <div id="successMessage" class="hidden mt-6 p-4 bg-emerald-5
+            const data = Object.fromEntries(new FormData(form));
+            
+            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data)})
+            .then(res => {
+                document.getElementById('successMsg').classList.remove('hidden');
+                form.reset();
+                document.getElementById('rangeValue').innerText = '0%';
+                btn.disabled = false;
+                btn.innerText = 'Guardar y Actualizar Proyecto';
+            })
+            .catch(err => alert('Error: ' + err.message));
+        });
+    </script>
+</body>
+</html>

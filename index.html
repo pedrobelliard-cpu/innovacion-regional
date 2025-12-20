@@ -10,40 +10,47 @@
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen pb-12">
+<body class="bg-slate-100 min-h-screen pb-12 text-slate-800">
     <div class="max-w-4xl mx-auto pt-10 px-4">
         <div class="bg-white shadow-2xl rounded-3xl overflow-hidden border border-slate-200">
             <div class="bg-blue-700 p-8 text-white">
-                <h1 class="text-3xl font-bold">Registro Estratégico de Innovación</h1>
-                <p class="opacity-80 mt-2">Seguimiento y control de proyectos regionales</p>
+                <h1 class="text-3xl font-bold italic tracking-tight">Innova<span class="text-blue-300">Hub</span> Regional</h1>
+                <p class="opacity-90 mt-2 font-medium">Formulario Maestro de Proyectos Estratégicos</p>
             </div>
 
             <form id="innovationForm" class="p-8 space-y-6">
+                
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1 text-blue-700">Líder del Proyecto</label>
-                        <input type="text" name="lider" required class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                        <label class="block text-sm font-bold text-blue-700 mb-1">Líder del Proyecto</label>
+                        <input type="text" name="lider" required class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
                     </div>
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1 text-blue-700">Cédula</label>
-                        <input type="text" name="cedula" placeholder="000-0000000-0" required class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                        <label class="block text-sm font-bold text-blue-700 mb-1">Cédula</label>
+                        <input type="text" name="cedula" placeholder="000-0000000-0" required class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
                     </div>
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1 text-blue-700">Teléfono</label>
-                        <input type="tel" name="telefono" placeholder="809-000-0000" required class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                        <label class="block text-sm font-bold text-blue-700 mb-1">Teléfono</label>
+                        <input type="tel" name="telefono" placeholder="809-000-0000" required class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
                     </div>
                 </div>
 
-                <hr class="border-slate-100">
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-bold text-slate-700 mb-1">Nombre del Proyecto de Innovación</label>
-                        <input type="text" name="proyecto" required class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Nombre del Proyecto</label>
+                        <input type="text" name="proyecto" required class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Prioridad</label>
+                        <select name="prioridad" class="w-full p-3 border border-slate-300 rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                            <option value="Alta">🔴 Alta (Crítico)</option>
+                            <option value="Media">🟡 Media</option>
+                            <option value="Baja">🟢 Baja</option>
+                        </select>
                     </div>
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-1">Regional</label>
-                        <select name="regional" required class="w-full p-3 border rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500">
+                        <select name="regional" required class="w-full p-3 border border-slate-300 rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                             <option value="Metropolitana">Metropolitana</option>
                             <option value="Valdesia">Valdesia</option>
                             <option value="Cibao Norte">Cibao Norte</option>
@@ -52,39 +59,37 @@
                             <option value="Regional Sur">Regional Sur</option>
                         </select>
                     </div>
+                    <div class="md:col-span-2">
+                        <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 h-full">
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="text-sm font-bold text-blue-800">Estado de Avance</label>
+                                <span id="rangeValue" class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold">0%</span>
+                            </div>
+                            <input type="range" name="progreso" min="0" max="100" value="0" 
+                                class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-700"
+                                oninput="document.getElementById('rangeValue').innerText = this.value + '%'">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1">Prioridad</label>
-                        <select name="prioridad" class="w-full p-3 border rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="Alta">🔴 Alta (Crítico)</option>
-                            <option value="Media">🟡 Media</option>
-                            <option value="Baja">🟢 Baja</option>
-                        </select>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Descripción del Proyecto</label>
+                        <textarea name="descripcion" rows="3" placeholder="Detalle el objetivo principal y los beneficios..." class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Observaciones / Notas Adicionales</label>
+                        <textarea name="observaciones" rows="2" placeholder="Cualquier información relevante para el seguimiento..." class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50"></textarea>
                     </div>
                 </div>
 
-                <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-                    <div class="flex justify-between items-center mb-4">
-                        <label class="block text-sm font-bold text-blue-800">Estado de Avance del Proyecto</label>
-                        <span id="rangeValue" class="bg-blue-600 text-white px-4 py-1 rounded-full font-bold">0%</span>
-                    </div>
-                    <input type="range" name="progreso" min="0" max="100" value="0" 
-                        class="w-full h-3 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-700"
-                        oninput="document.getElementById('rangeValue').innerText = this.value + '%'">
-                    <div class="flex justify-between text-xs text-blue-500 mt-2 font-medium">
-                        <span>Ideación</span>
-                        <span>Desarrollo</span>
-                        <span>Implementación</span>
-                        <span>Finalizado</span>
-                    </div>
-                </div>
-
-                <button type="submit" id="submitBtn" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-4 rounded-2xl shadow-lg transition-all transform hover:-translate-y-1">
-                    Guardar y Actualizar Proyecto
+                <button type="submit" id="submitBtn" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-4 rounded-2xl shadow-lg transition-all transform hover:-translate-y-1 active:scale-95">
+                    Sincronizar y Guardar Proyecto
                 </button>
             </form>
 
-            <div id="successMsg" class="hidden m-8 p-4 bg-green-100 text-green-800 border border-green-200 rounded-xl text-center font-bold">
-                ✅ Datos sincronizados correctamente en el Dashboard central.
+            <div id="successMsg" class="hidden m-8 p-4 bg-green-100 text-green-800 border border-green-200 rounded-xl text-center font-bold animate-bounce">
+                ✅ ¡Proyecto registrado con éxito en la nube!
             </div>
         </div>
     </div>
@@ -98,7 +103,7 @@
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
-            btn.innerText = 'Sincronizando...';
+            btn.innerText = 'Procesando Envío...';
 
             const data = Object.fromEntries(new FormData(form));
             
@@ -108,9 +113,13 @@
                 form.reset();
                 document.getElementById('rangeValue').innerText = '0%';
                 btn.disabled = false;
-                btn.innerText = 'Guardar y Actualizar Proyecto';
+                btn.innerText = 'Sincronizar y Guardar Proyecto';
+                setTimeout(() => document.getElementById('successMsg').classList.add('hidden'), 5000);
             })
-            .catch(err => alert('Error: ' + err.message));
+            .catch(err => {
+                alert('Error en conexión: ' + err.message);
+                btn.disabled = false;
+            });
         });
     </script>
 </body>

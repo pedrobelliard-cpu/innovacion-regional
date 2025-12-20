@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InnovaHub | Sistema Integral</title>
+    <title>InnovaHub v2 | Gestión Total</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style> body { font-family: 'Inter', sans-serif; } </style>
@@ -11,125 +11,94 @@
 <body class="bg-slate-100 min-h-screen pb-12 text-slate-800">
     <div class="max-w-4xl mx-auto pt-6 px-4">
         
-        <div class="flex gap-2 mb-0">
-            <button onclick="showTab('registro')" id="btnTabReg" class="px-8 py-3 rounded-t-2xl font-bold transition-all bg-white text-blue-700 border-t border-x border-slate-200">
-                📝 Registrar Proyecto
+        <div class="flex gap-2">
+            <button onclick="showTab('registro')" id="btnTabReg" class="px-8 py-3 rounded-t-2xl font-bold bg-white text-blue-700 border-t border-x border-slate-200">
+                📝 Registrar
             </button>
-            <button onclick="showTab('consulta')" id="btnTabCon" class="px-8 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600 hover:bg-slate-300">
-                🔍 Consultar Datos
+            <button onclick="showTab('consulta')" id="btnTabCon" class="px-8 py-3 rounded-t-2xl font-bold bg-slate-200 text-slate-600">
+                🔍 Consultar
             </button>
         </div>
 
-        <div id="tabRegistro" class="bg-white shadow-2xl rounded-b-3xl rounded-tr-3xl overflow-hidden border border-slate-200">
+        <div id="tabRegistro" class="bg-white shadow-2xl rounded-b-3xl rounded-tr-3xl border border-slate-200 overflow-hidden">
             <div class="bg-blue-700 p-6 text-white">
-                <h1 class="text-2xl font-bold italic">Innova<span class="text-blue-300">Hub</span> Regional</h1>
-                <p class="text-sm opacity-80">Formulario Maestro de Control</p>
+                <h1 class="text-2xl font-bold italic">InnovaHub <span class="text-blue-300">Regional</span></h1>
+                <p class="text-sm opacity-80">Registro de Proyectos Estratégicos</p>
             </div>
 
             <form id="innovationForm" class="p-8 space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                        <label class="block text-xs font-bold text-blue-700 uppercase mb-1">Líder del Proyecto</label>
-                        <input type="text" name="lider" required class="w-full p-3 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-blue-700 uppercase mb-1">Cédula</label>
-                        <input type="text" name="cedula" placeholder="000-0000000-0" required class="w-full p-3 border rounded-xl outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-blue-700 uppercase mb-1">Teléfono</label>
-                        <input type="tel" name="telefono" placeholder="809-000-0000" required class="w-full p-3 border rounded-xl outline-none">
-                    </div>
+                    <input type="text" name="lider" placeholder="Líder" required class="p-3 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" name="cedula" placeholder="Cédula" required class="p-3 border rounded-xl outline-none">
+                    <input type="text" name="telefono" placeholder="Teléfono" required class="p-3 border rounded-xl outline-none">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="md:col-span-2">
-                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Nombre del Proyecto</label>
-                        <input type="text" name="proyecto" required class="w-full p-3 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Prioridad</label>
-                        <select name="prioridad" class="w-full p-3 border rounded-xl bg-white outline-none">
-                            <option value="Alta">🔴 Alta</option>
-                            <option value="Media">🟡 Media</option>
-                            <option value="Baja">🟢 Baja</option>
-                        </select>
-                    </div>
+                    <input type="text" name="proyecto" placeholder="Nombre del Proyecto" required class="md:col-span-2 p-3 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                    <select name="prioridad" class="p-3 border rounded-xl bg-white"><option>Alta</option><option>Media</option><option>Baja</option></select>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Regional</label>
-                        <select name="regional" required class="w-full p-3 border rounded-xl bg-white outline-none">
-                            <option>Metropolitana</option><option>Valdesia</option><option>Cibao Norte</option>
-                            <option>Cibao Sur</option><option>Oriental</option><option>Regional Sur</option>
-                        </select>
-                    </div>
-                    <div class="md:col-span-2">
-                        <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
-                            <div class="flex justify-between items-center mb-2">
-                                <label class="text-xs font-bold text-blue-800 uppercase">Progreso actual</label>
-                                <span id="rangeValue" class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold">0%</span>
-                            </div>
-                            <input type="range" name="progreso" min="0" max="100" value="0" 
-                                class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-700"
-                                oninput="document.getElementById('rangeValue').innerText = this.value + '%'">
+                    <select name="regional" required class="p-3 border rounded-xl bg-white">
+                        <option>Metropolitana</option><option>Valdesia</option><option>Cibao Norte</option>
+                        <option>Cibao Sur</option><option>Oriental</option><option>Regional Sur</option>
+                    </select>
+                    
+                    <div class="md:col-span-2 bg-blue-50 p-4 rounded-xl border-2 border-blue-200">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-xs font-bold text-blue-800 uppercase">Progreso del Proyecto</label>
+                            <span id="rangeValue" class="bg-blue-700 text-white px-4 py-1 rounded-full text-xs font-bold">0%</span>
                         </div>
+                        <input type="range" name="progreso" min="0" max="100" value="0" 
+                            class="w-full h-3 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-700"
+                            oninput="document.getElementById('rangeValue').innerText = this.value + '%'">
                     </div>
                 </div>
 
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Descripción General</label>
-                        <textarea name="descripcion" rows="3" class="w-full p-3 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="¿De qué trata el proyecto?"></textarea>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Descripción</label>
+                        <textarea name="descripcion" rows="3" required class="w-full p-3 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="Detalles del proyecto..."></textarea>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Observaciones / Notas</label>
-                        <textarea name="observaciones" rows="2" class="w-full p-3 border rounded-xl outline-none bg-slate-50" placeholder="Notas adicionales para el jefe..."></textarea>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Observaciones</label>
+                        <textarea name="observaciones" rows="2" class="w-full p-3 border rounded-xl outline-none bg-slate-50 border-dashed border-slate-300" placeholder="Notas adicionales..."></textarea>
                     </div>
                 </div>
 
-                <button type="submit" id="submitBtn" class="w-full bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-blue-800 transition-all transform active:scale-95">
-                    🚀 Guardar y Sincronizar
+                <button type="submit" id="submitBtn" class="w-full bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-blue-800 transition-all">
+                    💾 GUARDAR PROYECTO
                 </button>
             </form>
         </div>
 
-        <div id="tabConsulta" class="hidden bg-white shadow-2xl rounded-3xl overflow-hidden border border-slate-200 min-h-[500px]">
+        <div id="tabConsulta" class="hidden bg-white shadow-2xl rounded-3xl border border-slate-200 min-h-[500px] overflow-hidden">
             <div class="bg-slate-800 p-6 text-white text-center">
-                <h2 class="text-2xl font-bold">Panel de Consulta de Proyectos</h2>
+                <h2 class="text-2xl font-bold">Buscador de Proyectos</h2>
             </div>
             <div class="p-8 space-y-6">
-                <div class="flex flex-col md:flex-row gap-2">
-                    <select id="projectSelector" class="flex-1 p-4 border-2 border-slate-200 rounded-xl bg-white outline-none font-medium">
+                <div class="flex gap-2">
+                    <select id="projectSelector" class="flex-1 p-4 border-2 border-slate-200 rounded-xl bg-white font-medium">
                         <option value="">Cargando proyectos...</option>
                     </select>
-                    <button onclick="searchProject()" class="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 transition-all">
-                        BUSCAR DETALLES
-                    </button>
+                    <button onclick="searchProject()" class="bg-blue-600 text-white px-8 rounded-xl font-bold hover:bg-blue-700">BUSCAR</button>
                 </div>
 
                 <div id="resultCard" class="hidden border-2 border-blue-100 rounded-2xl p-6 bg-blue-50/50 space-y-4">
-                    <div class="flex justify-between items-center border-b border-blue-200 pb-4">
-                        <h3 id="resProyecto" class="text-2xl font-bold text-blue-900 uppercase"></h3>
-                        <span id="resPrioridad" class="px-4 py-1 rounded-full text-xs font-bold"></span>
+                    <h3 id="resProyecto" class="text-2xl font-bold text-blue-900 border-b pb-2 uppercase"></h3>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <p><strong>📍 Regional:</strong> <span id="resRegional"></span></p>
+                        <p><strong>👤 Líder:</strong> <span id="resLider"></span></p>
+                        <p><strong>📞 Tel:</strong> <span id="resTel"></span></p>
+                        <p><strong>📈 Avance:</strong> <span id="resProg" class="text-blue-700 font-bold underline"></span></p>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                        <p><strong>📍 Regional:</strong> <span id="resRegional" class="text-slate-600"></span></p>
-                        <p><strong>👤 Líder:</strong> <span id="resLider" class="text-slate-600"></span></p>
-                        <p><strong>🪪 Cédula:</strong> <span id="resCedula" class="text-slate-600"></span></p>
-                        <p><strong>📞 Teléfono:</strong> <span id="resTel" class="text-slate-600"></span></p>
-                        <p><strong>📈 Progreso:</strong> <span id="resProg" class="font-bold text-blue-700"></span></p>
+                    <div class="mt-4 p-4 bg-white rounded-xl border shadow-sm">
+                        <p class="text-[10px] font-bold text-blue-400 uppercase">Descripción</p>
+                        <p id="resDesc" class="text-slate-700 italic mt-1"></p>
                     </div>
-                    <div class="space-y-4 mt-4">
-                        <div class="p-4 bg-white rounded-xl border border-blue-100">
-                            <p class="text-[10px] font-bold text-blue-400 uppercase mb-1">Descripción del Proyecto</p>
-                            <p id="resDesc" class="text-slate-700 italic"></p>
-                        </div>
-                        <div class="p-4 bg-slate-100 rounded-xl border border-slate-200">
-                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Observaciones</p>
-                            <p id="resObs" class="text-slate-600"></p>
-                        </div>
+                    <div class="p-4 bg-yellow-50 rounded-xl border border-yellow-100">
+                        <p class="text-[10px] font-bold text-yellow-600 uppercase">Observaciones del Seguimiento</p>
+                        <p id="resObs" class="text-slate-600 mt-1"></p>
                     </div>
                 </div>
             </div>
@@ -137,36 +106,23 @@
     </div>
 
     <script>
-        // REEMPLAZA CON TU URL DE GOOGLE APPS SCRIPT
-        const SCRIPT_URL = 'TU_NUEVA_URL_AQUI';
+        // ¡PEGA AQUÍ TU URL DE GOOGLE APPS SCRIPT!
+        const SCRIPT_URL = 'ESCRIBE_AQUI_TU_NUEVO_URL'; 
         let allProjects = [];
 
         function showTab(tab) {
             document.getElementById('tabRegistro').classList.toggle('hidden', tab !== 'registro');
             document.getElementById('tabConsulta').classList.toggle('hidden', tab !== 'consulta');
-            
-            const btnReg = document.getElementById('btnTabReg');
-            const btnCon = document.getElementById('btnTabCon');
-
-            if(tab === 'registro') {
-                btnReg.className = "px-8 py-3 rounded-t-2xl font-bold bg-white text-blue-700 border-t border-x border-slate-200";
-                btnCon.className = "px-8 py-3 rounded-t-2xl font-bold bg-slate-200 text-slate-600 hover:bg-slate-300";
-            } else {
-                btnCon.className = "px-8 py-3 rounded-t-2xl font-bold bg-white text-blue-700 border-t border-x border-slate-200";
-                btnReg.className = "px-8 py-3 rounded-t-2xl font-bold bg-slate-200 text-slate-600 hover:bg-slate-300";
-                loadProjects();
-            }
+            if(tab === 'consulta') loadProjects();
         }
 
         function loadProjects() {
             const selector = document.getElementById('projectSelector');
-            selector.innerHTML = '<option>Cargando lista desde Google Sheets...</option>';
+            selector.innerHTML = '<option>Cargando lista...</option>';
             fetch(SCRIPT_URL).then(res => res.json()).then(data => {
                 allProjects = data;
                 selector.innerHTML = '<option value="">Seleccione un proyecto...</option>';
-                data.forEach(p => {
-                    if(p.proyecto) selector.innerHTML += `<option value="${p.proyecto}">${p.proyecto}</option>`;
-                });
+                data.forEach(p => { if(p.proyecto) selector.innerHTML += `<option value="${p.proyecto}">${p.proyecto}</option>`; });
             });
         }
 
@@ -178,33 +134,24 @@
                 document.getElementById('resProyecto').innerText = p.proyecto;
                 document.getElementById('resLider').innerText = p.líder;
                 document.getElementById('resRegional').innerText = p.regional;
-                document.getElementById('resPrioridad').innerText = p.prioridad;
-                document.getElementById('resCedula').innerText = p.cédula;
                 document.getElementById('resTel').innerText = p.teléfono;
                 document.getElementById('resProg').innerText = p.progreso;
-                document.getElementById('resDesc').innerText = p.descripción || 'No disponible';
-                document.getElementById('resObs').innerText = p.observaciones || 'Sin observaciones';
-                
-                // Color de prioridad
-                const prio = document.getElementById('resPrioridad');
-                prio.className = "px-4 py-1 rounded-full text-xs font-bold " + 
-                    (p.prioridad.includes('Alta') ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700");
+                document.getElementById('resDesc').innerText = p.descripción || 'Sin descripción registrada';
+                document.getElementById('resObs').innerText = p.observaciones || 'Sin observaciones registradas';
             }
         }
 
         document.getElementById('innovationForm').addEventListener('submit', e => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
-            btn.innerText = 'Guardando en la Nube...';
+            btn.innerText = 'Guardando...';
             btn.disabled = true;
-
-            const data = Object.fromEntries(new FormData(e.target));
-            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data)})
+            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(Object.fromEntries(new FormData(e.target)))})
             .then(() => {
-                alert('¡Proyecto guardado exitosamente!');
+                alert('¡Datos guardados con éxito!');
                 e.target.reset();
                 document.getElementById('rangeValue').innerText = '0%';
-                btn.innerText = '🚀 Guardar y Sincronizar';
+                btn.innerText = '💾 GUARDAR PROYECTO';
                 btn.disabled = false;
             });
         });

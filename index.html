@@ -100,13 +100,16 @@
                         <p class="text-[10px] font-bold text-yellow-600 uppercase">Observaciones del Seguimiento</p>
                         <p id="resObs" class="text-slate-600 mt-1"></p>
                     </div>
+                    
+                    <button onclick="deleteProject()" id="deleteBtn" class="w-full mt-4 bg-red-600 text-white font-bold py-3 rounded-xl hover:bg-red-700 transition-all flex items-center justify-center gap-2">
+                        🗑️ BORRAR REGISTRO SELECCIONADO
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // ¡PEGA AQUÍ TU URL DE GOOGLE APPS SCRIPT!
         const SCRIPT_URL = 'ESCRIBE_AQUI_TU_NUEVO_URL'; 
         let allProjects = [];
 
@@ -139,6 +142,31 @@
                 document.getElementById('resDesc').innerText = p.descripción || 'Sin descripción registrada';
                 document.getElementById('resObs').innerText = p.observaciones || 'Sin observaciones registradas';
             }
+        }
+
+        // NUEVA FUNCIÓN PARA ELIMINAR
+        function deleteProject() {
+            const proyecto = document.getElementById('resProyecto').innerText;
+            if(!confirm(`¿Seguro que deseas eliminar el proyecto "${proyecto}" permanentemente?`)) return;
+
+            const btn = document.getElementById('deleteBtn');
+            btn.innerText = 'Eliminando...';
+            btn.disabled = true;
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'delete', proyecto: proyecto })
+            })
+            .then(res => res.json())
+            .then(res => {
+                alert('Registro eliminado correctamente.');
+                document.getElementById('resultCard').classList.add('hidden');
+                loadProjects(); // Recargar lista
+            })
+            .finally(() => {
+                btn.innerText = '🗑️ BORRAR REGISTRO SELECCIONADO';
+                btn.disabled = false;
+            });
         }
 
         document.getElementById('innovationForm').addEventListener('submit', e => {

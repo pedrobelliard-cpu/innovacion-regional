@@ -3,27 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InnovaHub v2 | Gestión Total</title>
+    <title>InnovaHub Pro | Business Intelligence</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style> body { font-family: 'Inter', sans-serif; } </style>
 </head>
 <body class="bg-slate-100 min-h-screen pb-12 text-slate-800">
-    <div class="max-w-4xl mx-auto pt-6 px-4">
+    <div class="max-w-5xl mx-auto pt-6 px-4">
         
-        <div class="flex gap-2">
-            <button onclick="showTab('registro')" id="btnTabReg" class="px-8 py-3 rounded-t-2xl font-bold bg-white text-blue-700 border-t border-x border-slate-200">
+        <div class="flex gap-2 mb-0">
+            <button onclick="showTab('registro')" id="btnTabReg" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-white text-blue-700 border-t border-x border-slate-200">
                 📝 Registrar
             </button>
-            <button onclick="showTab('consulta')" id="btnTabCon" class="px-8 py-3 rounded-t-2xl font-bold bg-slate-200 text-slate-600">
-                🔍 Consultar / Borrar
+            <button onclick="showTab('consulta')" id="btnTabCon" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600">
+                🔍 Consultar
+            </button>
+            <button onclick="showTab('dashboard')" id="btnTabDash" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600">
+                📊 Dashboard & Reportes
             </button>
         </div>
 
         <div id="tabRegistro" class="bg-white shadow-2xl rounded-b-3xl rounded-tr-3xl border border-slate-200 overflow-hidden">
-            <div class="bg-blue-700 p-6 text-white">
-                <h1 class="text-2xl font-bold italic">InnovaHub <span class="text-blue-300">Regional</span></h1>
-                <p class="text-sm opacity-80">Registro de Proyectos Estratégicos</p>
+            <div class="bg-blue-700 p-6 text-white flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold italic">InnovaHub <span class="text-blue-300">Regional</span></h1>
+                    <p class="text-sm opacity-80">Gestión de Proyectos Estratégicos</p>
+                </div>
+                <div class="text-right hidden md:block">
+                    <p class="text-xs uppercase font-bold opacity-60">Módulo de Finanzas v2.0</p>
+                </div>
             </div>
 
             <form id="innovationForm" class="p-8 space-y-6">
@@ -33,9 +42,13 @@
                     <input type="text" name="telefono" placeholder="Teléfono" required class="p-3 border rounded-xl outline-none">
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <input type="text" name="proyecto" placeholder="Nombre del Proyecto" required class="md:col-span-2 p-3 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                     <select name="prioridad" class="p-3 border rounded-xl bg-white"><option>Alta</option><option>Media</option><option>Baja</option></select>
+                    <div class="relative">
+                        <span class="absolute left-3 top-3 text-slate-400">$</span>
+                        <input type="number" name="presupuesto" placeholder="Presupuesto" required class="w-full p-3 pl-7 border rounded-xl outline-none focus:ring-2 border-green-200 focus:ring-green-500">
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -56,140 +69,242 @@
                 </div>
 
                 <div class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Descripción</label>
-                        <textarea name="descripcion" rows="3" required class="w-full p-3 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="Detalles del proyecto..."></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Observaciones</label>
-                        <textarea name="observaciones" rows="2" class="w-full p-3 border rounded-xl outline-none bg-slate-50 border-dashed border-slate-300" placeholder="Notas adicionales..."></textarea>
-                    </div>
+                    <textarea name="descripcion" rows="3" required class="w-full p-3 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="Descripción detallada del proyecto..."></textarea>
+                    <textarea name="observaciones" rows="2" class="w-full p-3 border rounded-xl outline-none bg-slate-50 border-dashed border-slate-300" placeholder="Observaciones técnicas..."></textarea>
                 </div>
 
-                <button type="submit" id="submitBtn" class="w-full bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-blue-800 transition-all">
-                    💾 GUARDAR PROYECTO
+                <button type="submit" id="submitBtn" class="w-full bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-blue-800 transition-all flex justify-center items-center gap-2">
+                    <span>💾</span> GUARDAR EN BASE DE DATOS
                 </button>
             </form>
         </div>
 
         <div id="tabConsulta" class="hidden bg-white shadow-2xl rounded-3xl border border-slate-200 min-h-[500px] overflow-hidden">
             <div class="bg-slate-800 p-6 text-white text-center">
-                <h2 class="text-2xl font-bold">Buscador y Gestión de Registros</h2>
+                <h2 class="text-2xl font-bold">Explorador de Proyectos</h2>
             </div>
             <div class="p-8 space-y-6">
                 <div class="flex flex-col gap-3">
-                    <label class="text-sm font-bold text-slate-600">Seleccione un proyecto para ver o eliminar:</label>
                     <div class="flex flex-wrap gap-2">
                         <select id="projectSelector" class="flex-1 min-w-[200px] p-4 border-2 border-slate-200 rounded-xl bg-white font-medium">
                             <option value="">Cargando proyectos...</option>
                         </select>
-                        <button onclick="searchProject()" class="bg-blue-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-blue-700 transition-all">
-                            🔍 BUSCAR
-                        </button>
-                        <button onclick="deleteProjectFromSelector()" id="mainDeleteBtn" class="bg-red-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-red-700 transition-all">
-                            🗑️ BORRAR SELECCIONADO
-                        </button>
+                        <button onclick="searchProject()" class="bg-blue-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-blue-700">🔍</button>
+                        <button onclick="deleteProjectFromSelector()" id="mainDeleteBtn" class="bg-red-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-red-700">🗑️</button>
                     </div>
                 </div>
 
                 <div id="resultCard" class="hidden border-2 border-blue-100 rounded-2xl p-6 bg-blue-50/50 space-y-4">
                     <h3 id="resProyecto" class="text-2xl font-bold text-blue-900 border-b pb-2 uppercase"></h3>
-                    <div class="grid grid-cols-2 gap-4 text-sm">
-                        <p><strong>📍 Regional:</strong> <span id="resRegional"></span></p>
-                        <p><strong>👤 Líder:</strong> <span id="resLider"></span></p>
-                        <p><strong>📞 Tel:</strong> <span id="resTel"></span></p>
-                        <p><strong>📈 Avance:</strong> <span id="resProg" class="text-blue-700 font-bold underline"></span></p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                        <div class="bg-white p-3 rounded-lg border"><strong>👤 Líder:</strong> <p id="resLider"></p></div>
+                        <div class="bg-white p-3 rounded-lg border"><strong>📍 Regional:</strong> <p id="resRegional"></p></div>
+                        <div class="bg-white p-3 rounded-lg border"><strong>📈 Avance:</strong> <p id="resProg" class="text-blue-700 font-bold"></p></div>
+                        <div class="bg-white p-3 rounded-lg border"><strong>💰 Presupuesto:</strong> <p id="resPres" class="text-green-700 font-bold"></p></div>
                     </div>
-                    <div class="mt-4 p-4 bg-white rounded-xl border shadow-sm">
-                        <p class="text-[10px] font-bold text-blue-400 uppercase">Descripción</p>
-                        <p id="resDesc" class="text-slate-700 italic mt-1"></p>
-                    </div>
-                    <div class="p-4 bg-yellow-50 rounded-xl border border-yellow-100">
-                        <p class="text-[10px] font-bold text-yellow-600 uppercase">Observaciones del Seguimiento</p>
-                        <p id="resObs" class="text-slate-600 mt-1"></p>
-                    </div>
+                    <div id="resDesc" class="p-4 bg-white rounded-xl border italic text-slate-700"></div>
                 </div>
             </div>
         </div>
+
+        <div id="tabDashboard" class="hidden space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white p-6 rounded-3xl shadow-xl border border-slate-200">
+                    <p class="text-slate-500 text-xs font-bold uppercase">Proyectos Activos</p>
+                    <h2 id="kpiTotal" class="text-4xl font-bold text-blue-700">0</h2>
+                </div>
+                <div class="bg-white p-6 rounded-3xl shadow-xl border border-slate-200">
+                    <p class="text-slate-500 text-xs font-bold uppercase">Inversión Total</p>
+                    <h2 id="kpiPresupuesto" class="text-4xl font-bold text-green-600">$0</h2>
+                </div>
+                <div class="bg-white p-6 rounded-3xl shadow-xl border border-slate-200">
+                    <p class="text-slate-500 text-xs font-bold uppercase">Promedio Avance</p>
+                    <h2 id="kpiAvance" class="text-4xl font-bold text-orange-500">0%</h2>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-3xl shadow-xl border border-slate-200">
+                    <h3 class="font-bold mb-4 text-slate-600 text-center">Distribución por Regional</h3>
+                    <canvas id="chartRegional"></canvas>
+                </div>
+                <div class="bg-white p-6 rounded-3xl shadow-xl border border-slate-200">
+                    <h3 class="font-bold mb-4 text-slate-600 text-center">Estado de Carga de Trabajo</h3>
+                    <canvas id="chartPrioridad"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 p-8 rounded-3xl shadow-xl text-white">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div>
+                        <h3 class="text-xl font-bold">Reportes Avanzados</h3>
+                        <p class="text-slate-400 text-sm">Descarga la base de datos completa en formato CSV para Excel.</p>
+                    </div>
+                    <button onclick="exportToCSV()" class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2">
+                        📥 DESCARGAR DATA EXCEL
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // ¡RECUERDA PONER TU URL AQUÍ!
         const SCRIPT_URL = 'ESCRIBE_AQUI_TU_NUEVO_URL'; 
         let allProjects = [];
+        let charts = {};
 
         function showTab(tab) {
             document.getElementById('tabRegistro').classList.toggle('hidden', tab !== 'registro');
             document.getElementById('tabConsulta').classList.toggle('hidden', tab !== 'consulta');
-            if(tab === 'consulta') loadProjects();
+            document.getElementById('tabDashboard').classList.toggle('hidden', tab !== 'dashboard');
+            
+            // Estilos de botones
+            const btnReg = document.getElementById('btnTabReg');
+            const btnCon = document.getElementById('btnTabCon');
+            const btnDash = document.getElementById('btnTabDash');
+
+            [btnReg, btnCon, btnDash].forEach(b => {
+                b.classList.replace('bg-white', 'bg-slate-200');
+                b.classList.replace('text-blue-700', 'text-slate-600');
+            });
+
+            const activeBtn = tab === 'registro' ? btnReg : (tab === 'consulta' ? btnCon : btnDash);
+            activeBtn.classList.replace('bg-slate-200', 'bg-white');
+            activeBtn.classList.add('text-blue-700');
+
+            if(tab === 'consulta' || tab === 'dashboard') loadProjects(tab === 'dashboard');
         }
 
-        function loadProjects() {
+        function loadProjects(isDashboard = false) {
             const selector = document.getElementById('projectSelector');
-            selector.innerHTML = '<option>Cargando lista...</option>';
+            if(!isDashboard) selector.innerHTML = '<option>Cargando lista...</option>';
+
             fetch(SCRIPT_URL).then(res => res.json()).then(data => {
                 allProjects = data;
-                selector.innerHTML = '<option value="">Seleccione un proyecto...</option>';
-                data.forEach(p => { if(p.proyecto) selector.innerHTML += `<option value="${p.proyecto}">${p.proyecto}</option>`; });
+                if(!isDashboard) {
+                    selector.innerHTML = '<option value="">Seleccione un proyecto...</option>';
+                    data.forEach(p => { if(p.proyecto) selector.innerHTML += `<option value="${p.proyecto}">${p.proyecto}</option>`; });
+                } else {
+                    updateDashboard();
+                }
             });
+        }
+
+        function updateDashboard() {
+            // Cálculos
+            const total = allProjects.length;
+            const presupuestoTotal = allProjects.reduce((acc, p) => acc + (parseFloat(p.presupuesto) || 0), 0);
+            const avanceMedio = (allProjects.reduce((acc, p) => acc + (parseFloat(p.progreso) || 0), 0) / (total || 1)).toFixed(1);
+
+            document.getElementById('kpiTotal').innerText = total;
+            document.getElementById('kpiPresupuesto').innerText = '$' + presupuestoTotal.toLocaleString();
+            document.getElementById('kpiAvance').innerText = avanceMedio + '%';
+
+            // Datos para Gráficos
+            const regionalData = {};
+            const prioridadData = { 'Alta': 0, 'Media': 0, 'Baja': 0 };
+
+            allProjects.forEach(p => {
+                regionalData[p.regional] = (regionalData[p.regional] || 0) + 1;
+                prioridadData[p.prioridad] = (prioridadData[p.prioridad] || 0) + 1;
+            });
+
+            renderCharts(regionalData, prioridadData);
+        }
+
+        function renderCharts(regData, prioData) {
+            // Limpiar si existen
+            if(charts.reg) charts.reg.destroy();
+            if(charts.prio) charts.prio.destroy();
+
+            charts.reg = new Chart(document.getElementById('chartRegional'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(regData),
+                    datasets: [{ data: Object.values(regData), backgroundColor: ['#1d4ed8', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#2563eb'] }]
+                }
+            });
+
+            charts.prio = new Chart(document.getElementById('chartPrioridad'), {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(prioData),
+                    datasets: [{ label: 'Proyectos', data: Object.values(prioData), backgroundColor: ['#ef4444', '#f59e0b', '#10b981'] }]
+                },
+                options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+            });
+        }
+
+        function exportToCSV() {
+            if(allProjects.length === 0) return alert("No hay datos para exportar");
+            
+            const headers = Object.keys(allProjects[0]).join(",");
+            const rows = allProjects.map(p => Object.values(p).join(","));
+            const csvContent = "data:text/csv;charset=utf-8," + headers + "\n" + rows.join("\n");
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Reporte_InnovaHub_" + new Date().toLocaleDateString() + ".csv");
+            document.body.appendChild(link);
+            link.click();
         }
 
         function searchProject() {
             const val = document.getElementById('projectSelector').value;
-            if(!val) return alert("Por favor seleccione un proyecto");
+            if(!val) return alert("Seleccione un proyecto");
             const p = allProjects.find(item => item.proyecto === val);
             if(p) {
                 document.getElementById('resultCard').classList.remove('hidden');
                 document.getElementById('resProyecto').innerText = p.proyecto;
                 document.getElementById('resLider').innerText = p.líder;
                 document.getElementById('resRegional').innerText = p.regional;
-                document.getElementById('resTel').innerText = p.teléfono;
-                document.getElementById('resProg').innerText = p.progreso;
+                document.getElementById('resProg').innerText = p.progreso + '%';
+                document.getElementById('resPres').innerText = '$' + (parseFloat(p.presupuesto) || 0).toLocaleString();
                 document.getElementById('resDesc').innerText = p.descripción || 'Sin descripción';
-                document.getElementById('resObs').innerText = p.observaciones || 'Sin observaciones';
             }
         }
 
-        // FUNCIÓN DE BORRADO DIRECTO DESDE EL SELECTOR
+        // Script de guardado (mantiene compatibilidad)
+        document.getElementById('innovationForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.innerHTML = '⌛ PROCESANDO...';
+            btn.disabled = true;
+            
+            fetch(SCRIPT_URL, { 
+                method: 'POST', 
+                body: JSON.stringify(Object.fromEntries(new FormData(e.target)))
+            })
+            .then(() => {
+                alert('¡Proyecto Registrado Exitosamente!');
+                e.target.reset();
+                document.getElementById('rangeValue').innerText = '0%';
+                btn.innerHTML = '💾 GUARDAR EN BASE DE DATOS';
+                btn.disabled = false;
+            });
+        });
+
+        // Borrado (mantiene compatibilidad)
         function deleteProjectFromSelector() {
             const val = document.getElementById('projectSelector').value;
-            if(!val) return alert("Seleccione un proyecto de la lista para borrarlo");
-            
-            if(!confirm(`¿ESTÁ SEGURO? Se borrará el proyecto "${val}" permanentemente de la base de datos.`)) return;
+            if(!val || !confirm(`¿Eliminar definitivamente "${val}"?`)) return;
 
             const btn = document.getElementById('mainDeleteBtn');
-            btn.innerText = 'Borrando...';
-            btn.disabled = true;
-
+            btn.innerText = '...';
+            
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 body: JSON.stringify({ action: 'delete', proyecto: val })
             })
             .then(() => {
-                alert('Registro eliminado con éxito.');
+                alert('Registro eliminado.');
                 document.getElementById('resultCard').classList.add('hidden');
-                loadProjects(); // Recarga la lista del selector
+                loadProjects();
             })
-            .finally(() => {
-                btn.innerText = '🗑️ BORRAR SELECCIONADO';
-                btn.disabled = false;
-            });
+            .finally(() => btn.innerText = '🗑️');
         }
-
-        document.getElementById('innovationForm').addEventListener('submit', e => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = 'Guardando...';
-            btn.disabled = true;
-            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(Object.fromEntries(new FormData(e.target)))})
-            .then(() => {
-                alert('¡Datos guardados con éxito!');
-                e.target.reset();
-                document.getElementById('rangeValue').innerText = '0%';
-                btn.innerText = '💾 GUARDAR PROYECTO';
-                btn.disabled = false;
-            });
-        });
     </script>
 </body>
 </html>

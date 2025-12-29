@@ -15,7 +15,7 @@
 <body class="bg-slate-100 min-h-screen pb-12 text-slate-800">
     <div class="max-w-5xl mx-auto pt-6 px-4">
         
-        <div class="flex flex-wrap gap-2">
+        <div class="flex gap-2">
             <button onclick="showTab('registro')" id="btnTabReg" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600">
                 📝 Registrar
             </button>
@@ -23,10 +23,7 @@
                 🔍 Consultar
             </button>
             <button onclick="showTab('dashboard')" id="btnTabDash" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600">
-                📊 Dashboard
-            </button>
-            <button onclick="showTab('individual')" id="btnTabInd" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600">
-                🎯 Ficha 360°
+                📊 Dashboard & Reportes
             </button>
         </div>
 
@@ -66,7 +63,12 @@
                     
                     <select name="taller" required class="p-3 border rounded-xl bg-white">
                         <option value="" disabled selected>Taller</option>
-                        <option>Mecánica Automotriz</option><option>Informática</option><option>Administración</option>
+                        <option>Mecánica Automotriz</option><option>Mecánica Industrial</option><option>Electrónica</option>
+                        <option>Refrigeración</option><option>Electricidad</option><option>Informática</option>
+                        <option>Diseño Gráfico y Web</option><option>Administración</option><option>Ventas</option>
+                        <option>Panadería</option><option>Repostería</option><option>Confección de Ropa</option>
+                        <option>Telecomunicaciones</option><option>Artes Gráficas</option><option>Producción de TV</option>
+                        <option>Energías Renovables</option><option>Masaje</option><option>Desarrollo Profesional</option>
                     </select>
 
                     <input type="date" name="fecha" required class="p-3 border rounded-xl bg-white">
@@ -86,12 +88,22 @@
             <div class="bg-slate-800 p-6 text-white text-center"><h2 class="text-2xl font-bold">Buscador de Registros</h2></div>
             <div class="p-8 space-y-6">
                 <div class="flex flex-wrap gap-2">
-                    <select id="projectSelector" class="flex-1 min-w-[200px] p-4 border-2 border-slate-200 rounded-xl bg-white font-medium"></select>
+                    <select id="projectSelector" class="flex-1 min-w-[200px] p-4 border-2 border-slate-200 rounded-xl bg-white font-medium">
+                        <option value="">Cargando...</option>
+                    </select>
                     <button onclick="searchProject()" class="bg-blue-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-blue-700">🔍 Buscar</button>
                 </div>
+
                 <div id="resultCard" class="hidden border-2 border-blue-100 rounded-2xl p-6 bg-blue-50/50 space-y-4">
                     <h3 id="resProyecto" class="text-2xl font-bold text-blue-900 border-b pb-2 uppercase text-center"></h3>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm" id="resContent"></div>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-white p-3 rounded-lg border"><strong>👤 Líder:</strong> <p id="resLider"></p></div>
+                        <div class="bg-white p-3 rounded-lg border"><strong>📍 Regional:</strong> <p id="resRegional"></p></div>
+                        <div class="bg-white p-3 rounded-lg border"><strong>🛠️ Taller:</strong> <p id="resTaller" class="text-blue-600 font-bold"></p></div>
+                        <div class="bg-white p-3 rounded-lg border"><strong>📈 Avance:</strong> <p id="resProg" class="text-blue-700 font-bold"></p></div>
+                        <div class="bg-white p-3 rounded-lg border"><strong>💰 Presupuesto:</strong> <p id="resPres" class="text-green-700 font-bold"></p></div>
+                        <div class="bg-white p-3 rounded-lg border col-span-2 md:col-span-3"><strong>📝 Descripción:</strong> <p id="resDesc" class="mt-2 text-slate-600 italic"></p></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -105,177 +117,159 @@
                 <div><label class="text-xs font-bold text-slate-500 uppercase">Desde</label><input type="date" id="fInicio" onchange="applyFilters()" class="w-full p-3 border rounded-xl"></div>
                 <div><button onclick="resetFilters()" class="w-full bg-slate-200 text-slate-600 p-3 rounded-xl font-bold hover:bg-slate-300 uppercase text-xs">Limpiar</button></div>
             </div>
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-blue-600"><p class="text-slate-500 text-[10px] font-bold uppercase">Proyectos</p><h2 id="kpiTotal" class="text-3xl font-bold text-blue-700">0</h2></div>
                 <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-green-600"><p class="text-slate-500 text-[10px] font-bold uppercase">Inversión</p><h2 id="kpiPresupuesto" class="text-3xl font-bold text-green-600">$0</h2></div>
                 <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-orange-500"><p class="text-slate-500 text-[10px] font-bold uppercase">Avance Promedio</p><h2 id="kpiAvance" class="text-3xl font-bold text-orange-500">0%</h2></div>
             </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-white p-6 rounded-2xl shadow border"><canvas id="chartRegional"></canvas></div>
                 <div class="bg-white p-6 rounded-2xl shadow border"><canvas id="chartPrioridad"></canvas></div>
             </div>
         </div>
-
-        <div id="tabIndividual" class="hidden space-y-6">
-            <div class="bg-blue-800 p-8 rounded-3xl text-white shadow-xl flex flex-col md:flex-row justify-between items-center gap-6">
-                <div>
-                    <h2 class="text-3xl font-bold italic">Ficha Ejecutiva 360°</h2>
-                    <p class="opacity-80">Análisis individual de impacto y metas</p>
-                </div>
-                <div class="flex gap-3">
-                    <select id="selRegInd" onchange="filterProjectsByReg()" class="p-4 rounded-2xl bg-blue-900 border-none text-white font-bold shadow-inner">
-                        <option value="">Regional...</option>
-                        <option>Metropolitana</option><option>Valdesia</option><option>Cibao Norte</option><option>Cibao Sur</option><option>Oriental</option><option>Regional Sur</option>
-                    </select>
-                    <select id="selProjInd" onchange="loadIndividualAnalysis()" class="p-4 rounded-2xl bg-white text-blue-900 font-bold min-w-[220px] shadow-lg"></select>
-                </div>
-            </div>
-
-            <div id="indContent" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="space-y-6">
-                    <div class="bg-white p-6 rounded-3xl shadow-md border text-center">
-                        <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Salud del Proyecto</p>
-                        <div id="statusBadge" class="mt-3 py-2 rounded-full font-bold text-xs uppercase">CARGANDO...</div>
-                    </div>
-                    <div class="bg-white p-6 rounded-3xl shadow-md border">
-                        <p class="text-slate-400 text-[10px] font-bold uppercase mb-2">Presupuesto</p>
-                        <h3 id="indPres" class="text-3xl font-bold text-green-600">$0.00</h3>
-                        <p id="indLider" class="text-xs text-slate-500 mt-4 border-t pt-2 font-semibold"></p>
-                    </div>
-                </div>
-                <div class="bg-white p-8 rounded-3xl shadow-md border flex flex-col items-center justify-center">
-                    <p class="text-slate-400 text-[10px] font-bold uppercase mb-6">Progreso Real</p>
-                    <div class="relative w-56 h-56">
-                        <canvas id="chartGauge"></canvas>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center pt-6">
-                            <span id="gaugePercent" class="text-5xl font-black text-blue-800">0%</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-slate-50 p-8 rounded-3xl border-2 border-dashed border-slate-200">
-                    <h4 class="text-blue-900 font-bold text-xs uppercase border-b pb-3 mb-4 tracking-widest">Resumen Ejecutivo</h4>
-                    <p id="indDesc" class="text-sm text-slate-600 leading-relaxed italic"></p>
-                </div>
-            </div>
-        </div>
-
     </div>
 
     <script>
+        // --- CONFIGURACIÓN ---
         const SCRIPT_URL = 'ESCRIBE_AQUI_TU_NUEVO_URL'; 
         let allProjects = [];
+        let filteredData = [];
         let charts = {};
 
+        // --- SISTEMA DE NAVEGACIÓN ---
         function showTab(tab) {
-            ['tabRegistro', 'tabConsulta', 'tabDashboard', 'tabIndividual'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            ['btnTabReg', 'btnTabCon', 'btnTabDash', 'btnTabInd'].forEach(id => {
+            document.getElementById('tabRegistro').classList.add('hidden');
+            document.getElementById('tabConsulta').classList.add('hidden');
+            document.getElementById('tabDashboard').classList.add('hidden');
+
+            if(tab === 'registro') document.getElementById('tabRegistro').classList.remove('hidden');
+            if(tab === 'consulta') document.getElementById('tabConsulta').classList.remove('hidden');
+            if(tab === 'dashboard') document.getElementById('tabDashboard').classList.remove('hidden');
+
+            const btnIds = { registro: 'btnTabReg', consulta: 'btnTabCon', dashboard: 'btnTabDash' };
+            Object.values(btnIds).forEach(id => {
                 document.getElementById(id).classList.remove('tab-active', 'bg-white', 'text-blue-700');
                 document.getElementById(id).classList.add('bg-slate-200', 'text-slate-600');
             });
-
-            const activeTab = { registro: 'tabRegistro', consulta: 'tabConsulta', dashboard: 'tabDashboard', individual: 'tabIndividual' }[tab];
-            const activeBtn = { registro: 'btnTabReg', consulta: 'btnTabCon', dashboard: 'btnTabDash', individual: 'btnTabInd' }[tab];
             
-            document.getElementById(activeTab).classList.remove('hidden');
-            document.getElementById(activeBtn).classList.add('tab-active');
-            document.getElementById(activeBtn).classList.remove('bg-slate-200', 'text-slate-600');
+            const activeBtn = document.getElementById(btnIds[tab]);
+            activeBtn.classList.add('tab-active');
+            activeBtn.classList.remove('bg-slate-200', 'text-slate-600');
 
             if(tab !== 'registro') loadProjects(tab === 'dashboard');
         }
 
+        showTab('registro');
+
         async function loadProjects(isDashboard = false) {
             if (SCRIPT_URL.includes('ESCRIBE_AQUI')) return;
-            const response = await fetch(SCRIPT_URL);
-            allProjects = await response.json();
-            
-            // Llenar selector de consulta
-            const selector = document.getElementById('projectSelector');
-            selector.innerHTML = '<option value="">Seleccione un proyecto...</option>';
-            allProjects.forEach(p => { if(p.proyecto) selector.innerHTML += `<option value="${p.proyecto}">${p.proyecto}</option>`; });
-            
-            if(isDashboard) applyFilters();
+            try {
+                const response = await fetch(SCRIPT_URL);
+                const data = await response.json();
+                allProjects = data;
+                filteredData = data;
+                
+                if(isDashboard) {
+                    applyFilters();
+                } else {
+                    const selector = document.getElementById('projectSelector');
+                    selector.innerHTML = '<option value="">Seleccione un proyecto...</option>';
+                    data.forEach(p => { 
+                        if(p.proyecto) selector.innerHTML += `<option value="${p.proyecto}">${p.proyecto}</option>`; 
+                    });
+                }
+            } catch (error) {
+                console.error("Error cargando datos:", error);
+            }
         }
 
-        // LÓGICA FICHA 360°
-        function filterProjectsByReg() {
-            const reg = document.getElementById('selRegInd').value;
-            const selProj = document.getElementById('selProjInd');
-            selProj.innerHTML = '<option value="">Seleccione Proyecto</option>';
-            allProjects.filter(p => p.regional === reg).forEach(p => {
-                selProj.innerHTML += `<option value="${p.proyecto}">${p.proyecto}</option>`;
-            });
-        }
-
-        function loadIndividualAnalysis() {
-            const name = document.getElementById('selProjInd').value;
-            const p = allProjects.find(item => item.proyecto === name);
-            if(!p) return;
-
-            document.getElementById('indContent').classList.remove('hidden');
-            document.getElementById('indLider').innerText = "Responsable: " + (p.lider || p.líder);
-            document.getElementById('indPres').innerText = "$" + (parseFloat(p.presupuesto) || 0).toLocaleString();
-            document.getElementById('indDesc').innerText = p.descripcion || "Sin descripción.";
-            document.getElementById('gaugePercent').innerText = p.progreso + "%";
-
-            const badge = document.getElementById('statusBadge');
-            const prog = parseInt(p.progreso);
-            if(prog >= 80) { badge.innerText = "Óptimo"; badge.className = "mt-3 py-2 rounded-full font-bold text-xs bg-green-100 text-green-700"; }
-            else if(prog >= 40) { badge.innerText = "En Proceso"; badge.className = "mt-3 py-2 rounded-full font-bold text-xs bg-yellow-100 text-yellow-700"; }
-            else { badge.innerText = "Crítico"; badge.className = "mt-3 py-2 rounded-full font-bold text-xs bg-red-100 text-red-700"; }
-
-            renderGauge(prog);
-        }
-
-        function renderGauge(val) {
-            if(charts.gauge) charts.gauge.destroy();
-            charts.gauge = new Chart(document.getElementById('chartGauge'), {
-                type: 'doughnut',
-                data: {
-                    datasets: [{
-                        data: [val, 100 - val],
-                        backgroundColor: ['#1d4ed8', '#f1f5f9'],
-                        circumference: 240,
-                        rotation: 240,
-                        cutout: '85%',
-                        borderWidth: 0
-                    }]
-                },
-                options: { plugins: { legend: { display: false }, tooltip: { enabled: false } }, maintainAspectRatio: false }
-            });
-        }
-
-        // Dashboard y Consulta (Tu lógica original)
         function searchProject() {
             const val = document.getElementById('projectSelector').value;
             const p = allProjects.find(item => item.proyecto === val);
             if(p) {
                 document.getElementById('resultCard').classList.remove('hidden');
-                document.getElementById('resProyecto').innerText = p.proyecto;
-                document.getElementById('resContent').innerHTML = `
-                    <div class="bg-white p-3 rounded-lg border"><strong>👤 Líder:</strong> ${p.lider || p.líder}</div>
-                    <div class="bg-white p-3 rounded-lg border"><strong>📍 Regional:</strong> ${p.regional}</div>
-                    <div class="bg-white p-3 rounded-lg border"><strong>📈 Avance:</strong> ${p.progreso}%</div>
-                `;
+                document.getElementById('resProyecto').innerText = p.proyecto || '---';
+                document.getElementById('resLider').innerText = p.lider || p.líder || '---';
+                document.getElementById('resRegional').innerText = p.regional || '---';
+                document.getElementById('resTaller').innerText = p.taller || 'No asignado';
+                document.getElementById('resProg').innerText = (p.progreso || 0) + '%';
+                document.getElementById('resPres').innerText = '$' + (parseFloat(p.presupuesto) || 0).toLocaleString();
+                document.getElementById('resDesc').innerText = p.descripcion || '---';
             }
         }
 
-        function applyFilters() { /* Lógica de filtros original */ updateDashboardUI(); }
-        function updateDashboardUI() { /* Lógica de KPIs original */ renderCharts(); }
-        function renderCharts() { /* Lógica de gráficos original */ }
-        function resetFilters() { document.getElementById('fRegional').value = "Todas"; applyFilters(); }
+        function applyFilters() {
+            const reg = document.getElementById('fRegional').value;
+            const inicio = document.getElementById('fInicio').value;
+
+            filteredData = allProjects.filter(p => {
+                const matchReg = reg === "Todas" || p.regional === reg;
+                let matchFecha = true;
+                if(inicio && p.fecha) matchFecha = new Date(p.fecha) >= new Date(inicio);
+                return matchReg && matchFecha;
+            });
+            updateDashboardUI();
+        }
+
+        function updateDashboardUI() {
+            const total = filteredData.length;
+            const presupuestoTotal = filteredData.reduce((acc, p) => acc + (parseFloat(p.presupuesto) || 0), 0);
+            const avanceMedio = total > 0 ? (filteredData.reduce((acc, p) => acc + (parseFloat(p.progreso) || 0), 0) / total).toFixed(1) : 0;
+
+            document.getElementById('kpiTotal').innerText = total;
+            document.getElementById('kpiPresupuesto').innerText = '$' + presupuestoTotal.toLocaleString();
+            document.getElementById('kpiAvance').innerText = avanceMedio + '%';
+            renderCharts();
+        }
+
+        function renderCharts() {
+            const regData = {};
+            const prioData = { 'Alta': 0, 'Media': 0, 'Baja': 0 };
+            filteredData.forEach(p => {
+                regData[p.regional] = (regData[p.regional] || 0) + 1;
+                if(prioData[p.prioridad] !== undefined) prioData[p.prioridad]++;
+            });
+
+            if(charts.reg) charts.reg.destroy();
+            if(charts.prio) charts.prio.destroy();
+
+            charts.reg = new Chart(document.getElementById('chartRegional'), {
+                type: 'doughnut',
+                data: { labels: Object.keys(regData), datasets: [{ data: Object.values(regData), backgroundColor: ['#1d4ed8', '#3b82f6', '#60a5fa', '#93c5fd'] }] },
+                options: { plugins: { title: { display: true, text: 'Proyectos por Regional' } } }
+            });
+
+            charts.prio = new Chart(document.getElementById('chartPrioridad'), {
+                type: 'bar',
+                data: { labels: Object.keys(prioData), datasets: [{ label: 'Prioridad', data: Object.values(prioData), backgroundColor: '#1d4ed8' }] }
+            });
+        }
+
+        function resetFilters() {
+            document.getElementById('fRegional').value = "Todas";
+            document.getElementById('fInicio').value = "";
+            applyFilters();
+        }
 
         document.getElementById('innovationForm').addEventListener('submit', async e => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
-            btn.innerText = 'PROCESANDO...'; btn.disabled = true;
+            btn.innerText = 'PROCESANDO...';
+            btn.disabled = true;
             try {
                 await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(Object.fromEntries(new FormData(e.target))) });
-                alert('¡Guardado!'); e.target.reset();
-            } catch (e) { alert('Error'); } 
-            finally { btn.innerText = '💾 GUARDAR PROYECTO'; btn.disabled = false; }
+                alert('¡Proyecto guardado con éxito!');
+                e.target.reset();
+                document.getElementById('rangeValue').innerText = '0%';
+            } catch (e) {
+                alert('Error al guardar');
+            } finally {
+                btn.innerText = '💾 GUARDAR PROYECTO';
+                btn.disabled = false;
+            }
         });
-
-        showTab('registro');
     </script>
 </body>
 </html>

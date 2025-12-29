@@ -41,18 +41,38 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <input type="text" name="proyecto" placeholder="Nombre del Proyecto" required class="md:col-span-2 p-3 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
-                    <select name="prioridad" class="p-3 border rounded-xl bg-white"><option>Alta</option><option>Media</option><option>Baja</option></select>
+                    <select name="prioridad" class="p-3 border rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="" disabled selected>Prioridad</option>
+                        <option>Alta</option>
+                        <option>Media</option>
+                        <option>Baja</option>
+                    </select>
                     <div class="relative">
                         <span class="absolute left-3 top-3 text-slate-400">$</span>
                         <input type="number" name="presupuesto" placeholder="Presupuesto" required class="w-full p-3 pl-7 border rounded-xl outline-none border-green-200 focus:ring-2 focus:ring-green-500">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <select name="regional" required class="p-3 border rounded-xl bg-white">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <select name="regional" required class="p-3 border rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="" disabled selected>Seleccione Regional</option>
                         <option>Metropolitana</option><option>Valdesia</option><option>Cibao Norte</option>
                         <option>Cibao Sur</option><option>Oriental</option><option>Regional Sur</option>
                     </select>
+                    
+                    <select name="taller" required class="p-3 border rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="" disabled selected>Seleccione Taller</option>
+                        <option>Mecánica Automotriz</option><option>Mecánica Industrial</option>
+                        <option>Electrónica</option><option>Refrigeración</option>
+                        <option>Electricidad</option><option>Informática</option>
+                        <option>Diseño Gráfico y Web</option><option>Administración</option>
+                        <option>Ventas</option><option>Panadería</option>
+                        <option>Repostería</option><option>Confección de Ropa</option>
+                        <option>Telecomunicaciones</option><option>Artes Gráficas</option>
+                        <option>Producción de TV</option><option>Energías Renovables</option>
+                        <option>Masaje</option><option>Desarrollo Profesional</option>
+                    </select>
+
                     <input type="date" name="fecha" required class="p-3 border rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500">
                     
                     <div class="bg-blue-50 p-4 rounded-xl border-2 border-blue-200">
@@ -64,7 +84,7 @@
                     </div>
                 </div>
 
-                <textarea name="descripcion" rows="3" required class="w-full p-3 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="Descripción..."></textarea>
+                <textarea name="descripcion" rows="3" required class="w-full p-3 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="Descripción detallada del proyecto..."></textarea>
                 <button type="submit" id="submitBtn" class="w-full bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-blue-800 transition-all">💾 GUARDAR PROYECTO</button>
             </form>
         </div>
@@ -74,22 +94,22 @@
             <div class="p-8 space-y-6">
                 <div class="flex flex-wrap gap-2">
                     <select id="projectSelector" class="flex-1 min-w-[200px] p-4 border-2 border-slate-200 rounded-xl bg-white font-medium">
-                        <option value="">Cargando...</option>
+                        <option value="">Cargando proyectos...</option>
                     </select>
                     <button onclick="searchProject()" class="bg-blue-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-blue-700">🔍</button>
-                    <button onclick="deleteProjectFromSelector()" id="mainDeleteBtn" class="bg-red-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-red-700">🗑️</button>
                 </div>
 
                 <div id="resultCard" class="hidden border-2 border-blue-100 rounded-2xl p-6 bg-blue-50/50 space-y-4">
                     <h3 id="resProyecto" class="text-2xl font-bold text-blue-900 border-b pb-2 uppercase"></h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                         <div class="bg-white p-3 rounded-lg border"><strong>👤 Líder:</strong> <p id="resLider"></p></div>
                         <div class="bg-white p-3 rounded-lg border"><strong>📍 Regional:</strong> <p id="resRegional"></p></div>
+                        <div class="bg-white p-3 rounded-lg border"><strong>🛠️ Taller:</strong> <p id="resTaller" class="font-bold text-blue-600"></p></div>
                         <div class="bg-white p-3 rounded-lg border"><strong>📈 Avance:</strong> <p id="resProg" class="text-blue-700 font-bold"></p></div>
                         <div class="bg-white p-3 rounded-lg border"><strong>💰 Presupuesto:</strong> <p id="resPres" class="text-green-700 font-bold"></p></div>
                         
-                        <div class="bg-white p-3 rounded-lg border col-span-2 md:col-span-4 shadow-sm">
-                            <strong>📝 Descripción del Proyecto:</strong> 
+                        <div class="bg-white p-3 rounded-lg border col-span-2 md:col-span-3 shadow-sm">
+                            <strong>📝 Descripción:</strong> 
                             <p id="resDesc" class="mt-2 text-slate-600 leading-relaxed italic"></p>
                         </div>
                     </div>
@@ -151,166 +171,4 @@
                     <h3 class="text-xl font-bold">Generador de Reportes Excel</h3>
                     <p class="text-blue-300 text-sm">Se exportará únicamente la data visible bajo los filtros actuales.</p>
                 </div>
-                <button onclick="exportToCSV()" class="bg-green-500 hover:bg-green-600 text-white px-10 py-4 rounded-2xl font-extrabold shadow-lg transition-all transform hover:scale-105">
-                    📥 EXPORTAR DATA FILTRADA
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const SCRIPT_URL = 'ESCRIBE_AQUI_TU_NUEVO_URL'; 
-        let allProjects = [];
-        let filteredData = [];
-        let charts = {};
-
-        function showTab(tab) {
-            document.getElementById('tabRegistro').classList.toggle('hidden', tab !== 'registro');
-            document.getElementById('tabConsulta').classList.toggle('hidden', tab !== 'consulta');
-            document.getElementById('tabDashboard').classList.toggle('hidden', tab !== 'dashboard');
-            
-            const tabs = ['btnTabReg', 'btnTabCon', 'btnTabDash'];
-            tabs.forEach(t => {
-                document.getElementById(t).className = "px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600";
-            });
-            const active = tab === 'registro' ? 'btnTabReg' : (tab === 'consulta' ? 'btnTabCon' : 'btnTabDash');
-            document.getElementById(active).className = "px-6 py-3 rounded-t-2xl font-bold transition-all bg-white text-blue-700 border-t border-x border-slate-200";
-
-            if(tab !== 'registro') loadProjects(tab === 'dashboard');
-        }
-
-        function loadProjects(isDashboard = false) {
-            fetch(SCRIPT_URL).then(res => res.json()).then(data => {
-                allProjects = data;
-                filteredData = data;
-                if(isDashboard) {
-                    applyFilters();
-                } else {
-                    const selector = document.getElementById('projectSelector');
-                    selector.innerHTML = '<option value="">Seleccione un proyecto...</option>';
-                    data.forEach(p => { if(p.proyecto) selector.innerHTML += `<option value="${p.proyecto}">${p.proyecto}</option>`; });
-                }
-            });
-        }
-
-        // --- Lógica de Filtros (Dashboard) ---
-        function applyFilters() {
-            const reg = document.getElementById('fRegional').value;
-            const inicio = document.getElementById('fInicio').value;
-            const fin = document.getElementById('fFin').value;
-
-            filteredData = allProjects.filter(p => {
-                const matchReg = reg === "Todas" || p.regional === reg;
-                let matchFecha = true;
-                if(p.fecha) {
-                    const fProj = new Date(p.fecha);
-                    if(inicio) matchFecha = matchFecha && (fProj >= new Date(inicio));
-                    if(fin) matchFecha = matchFecha && (fProj <= new Date(fin));
-                }
-                return matchReg && matchFecha;
-            });
-            updateDashboardUI();
-        }
-
-        function resetFilters() {
-            document.getElementById('fRegional').value = "Todas";
-            document.getElementById('fInicio').value = "";
-            document.getElementById('fFin').value = "";
-            applyFilters();
-        }
-
-        function updateDashboardUI() {
-            const total = filteredData.length;
-            const presupuestoTotal = filteredData.reduce((acc, p) => acc + (parseFloat(p.presupuesto) || 0), 0);
-            const avanceMedio = (filteredData.reduce((acc, p) => acc + (parseFloat(p.progreso) || 0), 0) / (total || 1)).toFixed(1);
-
-            document.getElementById('kpiTotal').innerText = total;
-            document.getElementById('kpiPresupuesto').innerText = '$' + presupuestoTotal.toLocaleString();
-            document.getElementById('kpiAvance').innerText = avanceMedio + '%';
-
-            renderCharts();
-        }
-
-        function renderCharts() {
-            const regData = {};
-            const prioData = { 'Alta': 0, 'Media': 0, 'Baja': 0 };
-
-            filteredData.forEach(p => {
-                regData[p.regional] = (regData[p.regional] || 0) + 1;
-                prioData[p.prioridad] = (prioData[p.prioridad] || 0) + 1;
-            });
-
-            if(charts.reg) charts.reg.destroy();
-            if(charts.prio) charts.prio.destroy();
-
-            charts.reg = new Chart(document.getElementById('chartRegional'), {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(regData),
-                    datasets: [{ data: Object.values(regData), backgroundColor: ['#1d4ed8', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe'] }]
-                },
-                options: { plugins: { legend: { position: 'bottom' } } }
-            });
-
-            charts.prio = new Chart(document.getElementById('chartPrioridad'), {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(prioData),
-                    datasets: [{ label: 'Proyectos', data: Object.values(prioData), backgroundColor: ['#ef4444', '#f59e0b', '#10b981'] }]
-                }
-            });
-        }
-
-        function exportToCSV() {
-            if(filteredData.length === 0) return alert("No hay datos en el filtro actual");
-            const headers = Object.keys(filteredData[0]).join(",");
-            const rows = filteredData.map(p => Object.values(p).join(","));
-            const csvContent = "data:text/csv;charset=utf-8,\uFEFF" + headers + "\n" + rows.join("\n");
-            const link = document.createElement("a");
-            link.setAttribute("href", encodeURI(csvContent));
-            link.setAttribute("download", `Reporte_InnovaHub_Filtrado.csv`);
-            document.body.appendChild(link);
-            link.click();
-        }
-
-        // --- FUNCIÓN DE BÚSQUEDA ACTUALIZADA ---
-        function searchProject() {
-            const val = document.getElementById('projectSelector').value;
-            // Buscamos el proyecto en el array cargado de Google Sheets
-            const p = allProjects.find(item => item.proyecto === val);
-            
-            if(p) {
-                document.getElementById('resultCard').classList.remove('hidden');
-                
-                // Asignación de datos a los elementos HTML
-                document.getElementById('resProyecto').innerText = p.proyecto || '---';
-                document.getElementById('resLider').innerText = p.lider || p.líder || 'No especificado';
-                document.getElementById('resRegional').innerText = p.regional || '---';
-                document.getElementById('resProg').innerText = (p.progreso || 0) + '%';
-                document.getElementById('resPres').innerText = '$' + (parseFloat(p.presupuesto) || 0).toLocaleString();
-                
-                // Se muestra la descripción (si no existe, se pone un texto por defecto)
-                document.getElementById('resDesc').innerText = p.descripcion || 'Sin descripción disponible para este proyecto.';
-            } else {
-                alert("Por favor seleccione un proyecto válido.");
-            }
-        }
-
-        // --- Envío del Formulario ---
-        document.getElementById('innovationForm').addEventListener('submit', e => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = 'GUARDANDO...';
-            btn.disabled = true;
-            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(Object.fromEntries(new FormData(e.target)))})
-            .then(() => {
-                alert('¡Datos guardados!');
-                e.target.reset();
-                btn.innerText = '💾 GUARDAR PROYECTO';
-                btn.disabled = false;
-                document.getElementById('rangeValue').innerText = '0%';
-            });
-        });
-    </script>
-</body>
-</html>
+                <button onclick="exportToCSV()" class="bg-green

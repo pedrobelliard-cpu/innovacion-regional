@@ -79,6 +79,7 @@
                     <button onclick="searchProject()" class="bg-blue-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-blue-700">🔍</button>
                     <button onclick="deleteProjectFromSelector()" id="mainDeleteBtn" class="bg-red-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-red-700">🗑️</button>
                 </div>
+
                 <div id="resultCard" class="hidden border-2 border-blue-100 rounded-2xl p-6 bg-blue-50/50 space-y-4">
                     <h3 id="resProyecto" class="text-2xl font-bold text-blue-900 border-b pb-2 uppercase"></h3>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -86,6 +87,11 @@
                         <div class="bg-white p-3 rounded-lg border"><strong>📍 Regional:</strong> <p id="resRegional"></p></div>
                         <div class="bg-white p-3 rounded-lg border"><strong>📈 Avance:</strong> <p id="resProg" class="text-blue-700 font-bold"></p></div>
                         <div class="bg-white p-3 rounded-lg border"><strong>💰 Presupuesto:</strong> <p id="resPres" class="text-green-700 font-bold"></p></div>
+                        
+                        <div class="bg-white p-3 rounded-lg border col-span-2 md:col-span-4 shadow-sm">
+                            <strong>📝 Descripción del Proyecto:</strong> 
+                            <p id="resDesc" class="mt-2 text-slate-600 leading-relaxed italic"></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -163,7 +169,6 @@
             document.getElementById('tabConsulta').classList.toggle('hidden', tab !== 'consulta');
             document.getElementById('tabDashboard').classList.toggle('hidden', tab !== 'dashboard');
             
-            // Actualizar UI de botones
             const tabs = ['btnTabReg', 'btnTabCon', 'btnTabDash'];
             tabs.forEach(t => {
                 document.getElementById(t).className = "px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600";
@@ -188,6 +193,7 @@
             });
         }
 
+        // --- Lógica de Filtros (Dashboard) ---
         function applyFilters() {
             const reg = document.getElementById('fRegional').value;
             const inicio = document.getElementById('fInicio').value;
@@ -195,18 +201,14 @@
 
             filteredData = allProjects.filter(p => {
                 const matchReg = reg === "Todas" || p.regional === reg;
-                
-                // Lógica de fecha
                 let matchFecha = true;
                 if(p.fecha) {
                     const fProj = new Date(p.fecha);
                     if(inicio) matchFecha = matchFecha && (fProj >= new Date(inicio));
                     if(fin) matchFecha = matchFecha && (fProj <= new Date(fin));
                 }
-                
                 return matchReg && matchFecha;
             });
-
             updateDashboardUI();
         }
 
@@ -271,20 +273,30 @@
             link.click();
         }
 
-        // --- Mantenimiento de funciones originales ---
+        // --- FUNCIÓN DE BÚSQUEDA ACTUALIZADA ---
         function searchProject() {
             const val = document.getElementById('projectSelector').value;
+            // Buscamos el proyecto en el array cargado de Google Sheets
             const p = allProjects.find(item => item.proyecto === val);
+            
             if(p) {
                 document.getElementById('resultCard').classList.remove('hidden');
-                document.getElementById('resProyecto').innerText = p.proyecto;
-                document.getElementById('resLider').innerText = p.líder;
-                document.getElementById('resRegional').innerText = p.regional;
-                document.getElementById('resProg').innerText = p.progreso + '%';
+                
+                // Asignación de datos a los elementos HTML
+                document.getElementById('resProyecto').innerText = p.proyecto || '---';
+                document.getElementById('resLider').innerText = p.lider || p.líder || 'No especificado';
+                document.getElementById('resRegional').innerText = p.regional || '---';
+                document.getElementById('resProg').innerText = (p.progreso || 0) + '%';
                 document.getElementById('resPres').innerText = '$' + (parseFloat(p.presupuesto) || 0).toLocaleString();
+                
+                // Se muestra la descripción (si no existe, se pone un texto por defecto)
+                document.getElementById('resDesc').innerText = p.descripcion || 'Sin descripción disponible para este proyecto.';
+            } else {
+                alert("Por favor seleccione un proyecto válido.");
             }
         }
 
+        // --- Envío del Formulario ---
         document.getElementById('innovationForm').addEventListener('submit', e => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
@@ -296,6 +308,7 @@
                 e.target.reset();
                 btn.innerText = '💾 GUARDAR PROYECTO';
                 btn.disabled = false;
+                document.getElementById('rangeValue').innerText = '0%';
             });
         });
     </script>

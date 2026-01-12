@@ -59,6 +59,7 @@
                         <option value="" disabled selected>Regional</option>
                         <option>Metropolitana</option><option>Valdesia</option><option>Cibao Norte</option>
                         <option>Cibao Sur</option><option>Oriental</option><option>Regional Sur</option>
+                        <option>ONA</option><option>ECI</option>
                     </select>
                     
                     <select name="taller" required class="p-3 border rounded-xl bg-white">
@@ -112,7 +113,12 @@
             <div class="bg-white p-6 rounded-3xl shadow-lg border border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div class="md:col-span-2">
                     <label class="text-xs font-bold text-slate-500 uppercase">Regional</label>
-                    <select id="fRegional" onchange="applyFilters()" class="w-full p-3 border rounded-xl bg-slate-50"><option value="Todas">Todas</option><option>Metropolitana</option><option>Valdesia</option><option>Cibao Norte</option><option>Cibao Sur</option><option>Oriental</option><option>Regional Sur</option></select>
+                    <select id="fRegional" onchange="applyFilters()" class="w-full p-3 border rounded-xl bg-slate-50">
+                        <option value="Todas">Todas</option>
+                        <option>Metropolitana</option><option>Valdesia</option><option>Cibao Norte</option>
+                        <option>Cibao Sur</option><option>Oriental</option><option>Regional Sur</option>
+                        <option>ONA</option><option>ECI</option>
+                    </select>
                 </div>
                 <div><label class="text-xs font-bold text-slate-500 uppercase">Desde</label><input type="date" id="fInicio" onchange="applyFilters()" class="w-full p-3 border rounded-xl"></div>
                 <div><button onclick="resetFilters()" class="w-full bg-slate-200 text-slate-600 p-3 rounded-xl font-bold hover:bg-slate-300 uppercase text-xs">Limpiar</button></div>
@@ -237,7 +243,13 @@
 
             charts.reg = new Chart(document.getElementById('chartRegional'), {
                 type: 'doughnut',
-                data: { labels: Object.keys(regData), datasets: [{ data: Object.values(regData), backgroundColor: ['#1d4ed8', '#3b82f6', '#60a5fa', '#93c5fd'] }] },
+                data: { 
+                    labels: Object.keys(regData), 
+                    datasets: [{ 
+                        data: Object.values(regData), 
+                        backgroundColor: ['#1d4ed8', '#3b82f6', '#60a5fa', '#93c5fd', '#2dd4bf', '#818cf8', '#fbbf24', '#f87171'] 
+                    }] 
+                },
                 options: { plugins: { title: { display: true, text: 'Proyectos por Regional' } } }
             });
 

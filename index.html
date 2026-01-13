@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InnovaHub Pro | Business Intelligence</title>
+    <title>Lanza tu idea | Business Intelligence</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -30,8 +30,8 @@
         <div id="tabRegistro" class="bg-white shadow-2xl rounded-b-3xl rounded-tr-3xl border border-slate-200 overflow-hidden">
             <div class="bg-blue-700 p-6 text-white flex justify-between items-center">
                 <div>
-                    <h1 class="text-2xl font-bold italic">InnovaHub <span class="text-blue-300">Regional</span></h1>
-                    <p class="text-sm opacity-80">Gestión de Proyectos Estratégicos</p>
+                    <h1 class="text-2xl font-bold italic">Lanza <span class="text-blue-300">tu idea</span></h1>
+                    <p class="text-sm opacity-80">Gestión de ideas para proyectos estratégicos</p>
                 </div>
             </div>
 
@@ -202,8 +202,11 @@
 
             const btnIds = { registro: 'btnTabReg', seguimiento: 'btnTabInd', dashboard: 'btnTabDash' };
             Object.values(btnIds).forEach(id => {
-                document.getElementById(id).classList.remove('tab-active', 'bg-white', 'text-blue-700');
-                document.getElementById(id).classList.add('bg-slate-200', 'text-slate-600');
+                const el = document.getElementById(id);
+                if(el) {
+                    el.classList.remove('tab-active', 'bg-white', 'text-blue-700');
+                    el.classList.add('bg-slate-200', 'text-slate-600');
+                }
             });
             
             const activeBtn = document.getElementById(btnIds[tab]);
@@ -235,7 +238,6 @@
             }
         }
 
-        // --- LÓGICA SEGUIMIENTO INDIVIDUAL ---
         function populateLeaderSelector() {
             const selector = document.getElementById('leaderSelector');
             const leaders = [...new Set(allProjects.map(p => p.lider || p.líder))].filter(Boolean);
@@ -256,10 +258,9 @@
             document.getElementById('leaderContent').classList.remove('hidden');
             const leaderProjects = allProjects.filter(p => (p.lider || p.líder) === leaderName);
 
-            // KPIs
             const total = leaderProjects.length;
             const pres = leaderProjects.reduce((acc, p) => acc + (parseFloat(p.presupuesto) || 0), 0);
-            const prog = (leaderProjects.reduce((acc, p) => acc + (parseFloat(p.progreso) || 0), 0) / total).toFixed(1);
+            const prog = total > 0 ? (leaderProjects.reduce((acc, p) => acc + (parseFloat(p.progreso) || 0), 0) / total).toFixed(1) : 0;
 
             document.getElementById('indTotal').innerText = total;
             document.getElementById('indPres').innerText = '$' + pres.toLocaleString();
@@ -272,21 +273,21 @@
             if(charts.indBar) charts.indBar.destroy();
             if(charts.indPie) charts.indPie.destroy();
 
-            const labels = data.map(p => p.proyecto.substring(0, 20) + '...');
-            const progressValues = data.map(p => p.progreso);
-            const budgetValues = data.map(p => p.presupuesto);
+            const labels = data.map(p => (p.proyecto || 'S/N').substring(0, 15) + '...');
+            const progressValues = data.map(p => p.progreso || 0);
+            const budgetValues = data.map(p => p.presupuesto || 0);
 
             charts.indBar = new Chart(document.getElementById('chartIndProgreso'), {
                 type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: '% de Avance por Proyecto',
+                        label: '% de Avance',
                         data: progressValues,
                         backgroundColor: '#3b82f6'
                     }]
                 },
-                options: { plugins: { title: { display: true, text: 'Progreso Individual' } } }
+                options: { responsive: true, plugins: { title: { display: true, text: 'Progreso por Proyecto' } } }
             });
 
             charts.indPie = new Chart(document.getElementById('chartIndPresupuesto'), {
@@ -298,11 +299,10 @@
                         backgroundColor: ['#1d4ed8', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
                     }]
                 },
-                options: { plugins: { title: { display: true, text: 'Distribución de Presupuesto' } } }
+                options: { responsive: true, plugins: { title: { display: true, text: 'Presupuesto por Proyecto' } } }
             });
         }
 
-        // --- LÓGICA DASHBOARD GENERAL ---
         function applyFilters() {
             const reg = document.getElementById('fRegional').value;
             const inicio = document.getElementById('fInicio').value;
@@ -369,7 +369,7 @@
             btn.disabled = true;
             try {
                 await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(Object.fromEntries(new FormData(e.target))) });
-                alert('¡Proyecto guardado con éxito!');
+                alert('¡Idea guardada con éxito!');
                 e.target.reset();
                 document.getElementById('rangeValue').innerText = '0%';
             } catch (e) {

@@ -63,13 +63,48 @@
                     </select>
                     
                     <select name="taller" required class="p-3 border rounded-xl bg-white">
-                        <option value="" disabled selected>Taller</option>
-                        <option>Mecánica Automotriz</option><option>Mecánica Industrial</option><option>Electrónica</option>
-                        <option>Refrigeración</option><option>Electricidad</option><option>Informática</option>
-                        <option>Diseño Gráfico y Web</option><option>Administración</option><option>Ventas</option>
-                        <option>Panadería</option><option>Repostería</option><option>Confección de Ropa</option>
-                        <option>Telecomunicaciones</option><option>Artes Gráficas</option><option>Producción de TV</option>
-                        <option>Energías Renovables</option><option>Masaje</option><option>Desarrollo Profesional</option>
+                        <option value="" disabled selected>Departamento o Taller</option>
+                        <optgroup label="Talleres Técnicos">
+                            <option>Mecánica Automotriz</option><option>Mecánica Industrial</option><option>Electrónica</option>
+                            <option>Refrigeración</option><option>Electricidad</option><option>Informática</option>
+                            <option>Diseño Gráfico y Web</option><option>Administración</option><option>Ventas</option>
+                            <option>Panadería</option><option>Repostería</option><option>Confección de Ropa</option>
+                            <option>Telecomunicaciones</option><option>Artes Gráficas</option><option>Producción de TV</option>
+                            <option>Energías Renovables</option><option>Masaje</option><option>Desarrollo Profesional</option>
+                        </optgroup>
+                        <optgroup label="Direcciones y Departamentos">
+                            <option>Dirección de TI y Comunicaciones</option>
+                            <option>Dirección de Control Interno</option>
+                            <option>Dirección de Comunicaciones</option>
+                            <option>Dirección de Administración y Finanzas</option>
+                            <option>Dirección de Gestión Humana</option>
+                            <option>Dirección de Planificación y Desarrollo</option>
+                            <option>Dirección de Competitividad Empresarial</option>
+                            <option>Dirección de Rectoría y Regulación Centros</option>
+                            <option>Dirección de Innovación y Análisis Estratégico de Datos</option>
+                            <option>División Promoción Ingresos</option>
+                            <option>División Control de Operaciones</option>
+                            <option>División de Fiscalización</option>
+                            <option>División Gestión Legal</option>
+                            <option>Departamento de Planes y Proyectos</option>
+                            <option>Departamento de Gestión de Proyectos</option>
+                            <option>Departamento de Investigación</option>
+                            <option>División de Monitoreo y Evaluación Prospectiva</option>
+                            <option>Departamento de Desarrollo Institucional</option>
+                            <option>Departamento de Gestión y Calidad</option>
+                            <option>División de Medio Ambiente</option>
+                            <option>División de Auditoría Interna del SGC</option>
+                            <option>Departamento Formación de Programas Especiales</option>
+                            <option>División Formación Dual</option>
+                            <option>Departamento de Acreditación de Centros</option>
+                            <option>Departamento de Prensa y RR.PP</option>
+                            <option>División de Medios Audiovisuales</option>
+                            <option>Departamento Financiero</option>
+                            <option>División de Contabilidad</option>
+                            <option>División de Tesorería</option>
+                            <option>Caja</option>
+                            <option>Departamento de Seguridad</option>
+                        </optgroup>
                     </select>
 
                     <input type="date" name="fecha" required class="p-3 border rounded-xl bg-white">
@@ -100,7 +135,7 @@
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                         <div class="bg-white p-3 rounded-lg border"><strong>👤 Líder:</strong> <p id="resLider"></p></div>
                         <div class="bg-white p-3 rounded-lg border"><strong>📍 Regional:</strong> <p id="resRegional"></p></div>
-                        <div class="bg-white p-3 rounded-lg border"><strong>🛠️ Taller:</strong> <p id="resTaller" class="text-blue-600 font-bold"></p></div>
+                        <div class="bg-white p-3 rounded-lg border"><strong>🛠️ Depto. o Taller:</strong> <p id="resTaller" class="text-blue-600 font-bold"></p></div>
                         <div class="bg-white p-3 rounded-lg border"><strong>📈 Avance:</strong> <p id="resProg" class="text-blue-700 font-bold"></p></div>
                         <div class="bg-white p-3 rounded-lg border"><strong>💰 Presupuesto:</strong> <p id="resPres" class="text-green-700 font-bold"></p></div>
                         <div class="bg-white p-3 rounded-lg border col-span-2 md:col-span-3"><strong>📝 Descripción:</strong> <p id="resDesc" class="mt-2 text-slate-600 italic"></p></div>
@@ -247,7 +282,7 @@
                     labels: Object.keys(regData), 
                     datasets: [{ 
                         data: Object.values(regData), 
-                        backgroundColor: ['#1d4ed8', '#3b82f6', '#60a5fa', '#93c5fd', '#2dd4bf', '#818cf8', '#fbbf24', '#f87171'] 
+                        backgroundColor: ['#1d4ed8', '#3b82f6', '#60a5fa', '#93c5fd', '#2dd4bf', '#818cf8', '#fbbf24', '#f87171', '#c026d3', '#4ade80'] 
                     }] 
                 },
                 options: { plugins: { title: { display: true, text: 'Proyectos por Regional' } } }

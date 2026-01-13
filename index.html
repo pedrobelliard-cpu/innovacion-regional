@@ -19,11 +19,11 @@
             <button onclick="showTab('registro')" id="btnTabReg" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600">
                 📝 Registrar
             </button>
-            <button onclick="showTab('consulta')" id="btnTabCon" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600">
-                🔍 Consultar
+            <button onclick="showTab('seguimiento')" id="btnTabInd" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600">
+                👤 Seguimiento Individual
             </button>
             <button onclick="showTab('dashboard')" id="btnTabDash" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600">
-                📊 Dashboard & Reportes
+                📊 Dashboard General
             </button>
         </div>
 
@@ -120,25 +120,38 @@
             </form>
         </div>
 
-        <div id="tabConsulta" class="hidden bg-white shadow-2xl rounded-3xl border border-slate-200 min-h-[500px] overflow-hidden">
-            <div class="bg-slate-800 p-6 text-white text-center"><h2 class="text-2xl font-bold">Buscador de Registros</h2></div>
-            <div class="p-8 space-y-6">
-                <div class="flex flex-wrap gap-2">
-                    <select id="projectSelector" class="flex-1 min-w-[200px] p-4 border-2 border-slate-200 rounded-xl bg-white font-medium">
-                        <option value="">Cargando...</option>
+        <div id="tabSeguimiento" class="hidden space-y-6">
+            <div class="bg-white p-8 rounded-3xl shadow-2xl border border-slate-200">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
+                    <h2 class="text-2xl font-bold text-slate-800">📊 Seguimiento por Líder</h2>
+                    <select id="leaderSelector" onchange="updateLeaderDashboard()" class="w-full md:w-96 p-4 border-2 border-blue-100 rounded-2xl bg-white font-bold text-blue-700 outline-none focus:ring-4 focus:ring-blue-50">
+                        <option value="">Seleccione un Líder...</option>
                     </select>
-                    <button onclick="searchProject()" class="bg-blue-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-blue-700">🔍 Buscar</button>
                 </div>
 
-                <div id="resultCard" class="hidden border-2 border-blue-100 rounded-2xl p-6 bg-blue-50/50 space-y-4">
-                    <h3 id="resProyecto" class="text-2xl font-bold text-blue-900 border-b pb-2 uppercase text-center"></h3>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-                        <div class="bg-white p-3 rounded-lg border"><strong>👤 Líder:</strong> <p id="resLider"></p></div>
-                        <div class="bg-white p-3 rounded-lg border"><strong>📍 Regional:</strong> <p id="resRegional"></p></div>
-                        <div class="bg-white p-3 rounded-lg border"><strong>🛠️ Depto. o Taller:</strong> <p id="resTaller" class="text-blue-600 font-bold"></p></div>
-                        <div class="bg-white p-3 rounded-lg border"><strong>📈 Avance:</strong> <p id="resProg" class="text-blue-700 font-bold"></p></div>
-                        <div class="bg-white p-3 rounded-lg border"><strong>💰 Presupuesto:</strong> <p id="resPres" class="text-green-700 font-bold"></p></div>
-                        <div class="bg-white p-3 rounded-lg border col-span-2 md:col-span-3"><strong>📝 Descripción:</strong> <p id="resDesc" class="mt-2 text-slate-600 italic"></p></div>
+                <div id="leaderContent" class="hidden space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
+                            <p class="text-xs font-bold text-blue-600 uppercase">Proyectos Asignados</p>
+                            <h3 id="indTotal" class="text-3xl font-bold">0</h3>
+                        </div>
+                        <div class="bg-green-50 p-6 rounded-2xl border border-green-100">
+                            <p class="text-xs font-bold text-green-600 uppercase">Presupuesto Gestionado</p>
+                            <h3 id="indPres" class="text-3xl font-bold">$0</h3>
+                        </div>
+                        <div class="bg-orange-50 p-6 rounded-2xl border border-orange-100">
+                            <p class="text-xs font-bold text-orange-600 uppercase">Avance Promedio</p>
+                            <h3 id="indProg" class="text-3xl font-bold">0%</h3>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white p-4 rounded-2xl border shadow-sm">
+                            <canvas id="chartIndProgreso"></canvas>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border shadow-sm">
+                            <canvas id="chartIndPresupuesto"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -173,74 +186,123 @@
     </div>
 
     <script>
-        // --- CONFIGURACIÓN ---
         const SCRIPT_URL = 'ESCRIBE_AQUI_TU_NUEVO_URL'; 
         let allProjects = [];
         let filteredData = [];
         let charts = {};
 
-        // --- SISTEMA DE NAVEGACIÓN ---
         function showTab(tab) {
             document.getElementById('tabRegistro').classList.add('hidden');
-            document.getElementById('tabConsulta').classList.add('hidden');
+            document.getElementById('tabSeguimiento').classList.add('hidden');
             document.getElementById('tabDashboard').classList.add('hidden');
 
             if(tab === 'registro') document.getElementById('tabRegistro').classList.remove('hidden');
-            if(tab === 'consulta') document.getElementById('tabConsulta').classList.remove('hidden');
+            if(tab === 'seguimiento') document.getElementById('tabSeguimiento').classList.remove('hidden');
             if(tab === 'dashboard') document.getElementById('tabDashboard').classList.remove('hidden');
 
-            const btnIds = { registro: 'btnTabReg', consulta: 'btnTabCon', dashboard: 'btnTabDash' };
+            const btnIds = { registro: 'btnTabReg', seguimiento: 'btnTabInd', dashboard: 'btnTabDash' };
             Object.values(btnIds).forEach(id => {
                 document.getElementById(id).classList.remove('tab-active', 'bg-white', 'text-blue-700');
                 document.getElementById(id).classList.add('bg-slate-200', 'text-slate-600');
             });
             
             const activeBtn = document.getElementById(btnIds[tab]);
-            activeBtn.classList.add('tab-active');
-            activeBtn.classList.remove('bg-slate-200', 'text-slate-600');
+            if(activeBtn) {
+                activeBtn.classList.add('tab-active');
+                activeBtn.classList.remove('bg-slate-200', 'text-slate-600');
+            }
 
-            if(tab !== 'registro') loadProjects(tab === 'dashboard');
+            if(tab !== 'registro') loadProjects(tab);
         }
 
         showTab('registro');
 
-        async function loadProjects(isDashboard = false) {
+        async function loadProjects(targetTab) {
             if (SCRIPT_URL.includes('ESCRIBE_AQUI')) return;
             try {
                 const response = await fetch(SCRIPT_URL);
                 const data = await response.json();
                 allProjects = data;
-                filteredData = data;
                 
-                if(isDashboard) {
+                if(targetTab === 'dashboard') {
+                    filteredData = data;
                     applyFilters();
-                } else {
-                    const selector = document.getElementById('projectSelector');
-                    selector.innerHTML = '<option value="">Seleccione un proyecto...</option>';
-                    data.forEach(p => { 
-                        if(p.proyecto) selector.innerHTML += `<option value="${p.proyecto}">${p.proyecto}</option>`; 
-                    });
+                } else if(targetTab === 'seguimiento') {
+                    populateLeaderSelector();
                 }
             } catch (error) {
                 console.error("Error cargando datos:", error);
             }
         }
 
-        function searchProject() {
-            const val = document.getElementById('projectSelector').value;
-            const p = allProjects.find(item => item.proyecto === val);
-            if(p) {
-                document.getElementById('resultCard').classList.remove('hidden');
-                document.getElementById('resProyecto').innerText = p.proyecto || '---';
-                document.getElementById('resLider').innerText = p.lider || p.líder || '---';
-                document.getElementById('resRegional').innerText = p.regional || '---';
-                document.getElementById('resTaller').innerText = p.taller || 'No asignado';
-                document.getElementById('resProg').innerText = (p.progreso || 0) + '%';
-                document.getElementById('resPres').innerText = '$' + (parseFloat(p.presupuesto) || 0).toLocaleString();
-                document.getElementById('resDesc').innerText = p.descripcion || '---';
-            }
+        // --- LÓGICA SEGUIMIENTO INDIVIDUAL ---
+        function populateLeaderSelector() {
+            const selector = document.getElementById('leaderSelector');
+            const leaders = [...new Set(allProjects.map(p => p.lider || p.líder))].filter(Boolean);
+            
+            selector.innerHTML = '<option value="">Seleccione un Líder...</option>';
+            leaders.forEach(l => {
+                selector.innerHTML += `<option value="${l}">${l}</option>`;
+            });
         }
 
+        function updateLeaderDashboard() {
+            const leaderName = document.getElementById('leaderSelector').value;
+            if(!leaderName) {
+                document.getElementById('leaderContent').classList.add('hidden');
+                return;
+            }
+
+            document.getElementById('leaderContent').classList.remove('hidden');
+            const leaderProjects = allProjects.filter(p => (p.lider || p.líder) === leaderName);
+
+            // KPIs
+            const total = leaderProjects.length;
+            const pres = leaderProjects.reduce((acc, p) => acc + (parseFloat(p.presupuesto) || 0), 0);
+            const prog = (leaderProjects.reduce((acc, p) => acc + (parseFloat(p.progreso) || 0), 0) / total).toFixed(1);
+
+            document.getElementById('indTotal').innerText = total;
+            document.getElementById('indPres').innerText = '$' + pres.toLocaleString();
+            document.getElementById('indProg').innerText = prog + '%';
+
+            renderLeaderCharts(leaderProjects);
+        }
+
+        function renderLeaderCharts(data) {
+            if(charts.indBar) charts.indBar.destroy();
+            if(charts.indPie) charts.indPie.destroy();
+
+            const labels = data.map(p => p.proyecto.substring(0, 20) + '...');
+            const progressValues = data.map(p => p.progreso);
+            const budgetValues = data.map(p => p.presupuesto);
+
+            charts.indBar = new Chart(document.getElementById('chartIndProgreso'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '% de Avance por Proyecto',
+                        data: progressValues,
+                        backgroundColor: '#3b82f6'
+                    }]
+                },
+                options: { plugins: { title: { display: true, text: 'Progreso Individual' } } }
+            });
+
+            charts.indPie = new Chart(document.getElementById('chartIndPresupuesto'), {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: budgetValues,
+                        backgroundColor: ['#1d4ed8', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
+                    }]
+                },
+                options: { plugins: { title: { display: true, text: 'Distribución de Presupuesto' } } }
+            });
+        }
+
+        // --- LÓGICA DASHBOARD GENERAL ---
         function applyFilters() {
             const reg = document.getElementById('fRegional').value;
             const inicio = document.getElementById('fInicio').value;
@@ -251,10 +313,10 @@
                 if(inicio && p.fecha) matchFecha = new Date(p.fecha) >= new Date(inicio);
                 return matchReg && matchFecha;
             });
-            updateDashboardUI();
+            updateGeneralDashboardUI();
         }
 
-        function updateDashboardUI() {
+        function updateGeneralDashboardUI() {
             const total = filteredData.length;
             const presupuestoTotal = filteredData.reduce((acc, p) => acc + (parseFloat(p.presupuesto) || 0), 0);
             const avanceMedio = total > 0 ? (filteredData.reduce((acc, p) => acc + (parseFloat(p.progreso) || 0), 0) / total).toFixed(1) : 0;
@@ -262,10 +324,10 @@
             document.getElementById('kpiTotal').innerText = total;
             document.getElementById('kpiPresupuesto').innerText = '$' + presupuestoTotal.toLocaleString();
             document.getElementById('kpiAvance').innerText = avanceMedio + '%';
-            renderCharts();
+            renderGeneralCharts();
         }
 
-        function renderCharts() {
+        function renderGeneralCharts() {
             const regData = {};
             const prioData = { 'Alta': 0, 'Media': 0, 'Baja': 0 };
             filteredData.forEach(p => {
@@ -282,7 +344,7 @@
                     labels: Object.keys(regData), 
                     datasets: [{ 
                         data: Object.values(regData), 
-                        backgroundColor: ['#1d4ed8', '#3b82f6', '#60a5fa', '#93c5fd', '#2dd4bf', '#818cf8', '#fbbf24', '#f87171', '#c026d3', '#4ade80'] 
+                        backgroundColor: ['#1d4ed8', '#3b82f6', '#60a5fa', '#93c5fd', '#2dd4bf', '#818cf8', '#fbbf24'] 
                     }] 
                 },
                 options: { plugins: { title: { display: true, text: 'Proyectos por Regional' } } }

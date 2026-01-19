@@ -10,19 +10,25 @@
     <style> 
         body { font-family: 'Inter', sans-serif; }
         .tab-active { background-color: white !important; color: #1d4ed8 !important; border-top: 1px solid #e2e8f0; border-left: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; }
+        /* Animación para el ranking */
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slide { animation: slideIn 0.5s ease-out forwards; }
     </style>
 </head>
 <body class="bg-slate-100 min-h-screen pb-12 text-slate-800">
-    <div class="max-w-5xl mx-auto pt-6 px-4">
+    <div class="max-w-6xl mx-auto pt-6 px-4">
         
-        <div class="flex gap-2">
-            <button onclick="showTab('registro')" id="btnTabReg" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600">
+        <div class="flex flex-wrap gap-2">
+            <button onclick="showTab('registro')" id="btnTabReg" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600 flex-grow md:flex-grow-0">
                 📝 Registrar
             </button>
-            <button onclick="showTab('seguimiento')" id="btnTabInd" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600">
-                👤 Seguimiento Individual
+            <button onclick="showTab('seguimiento')" id="btnTabInd" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600 flex-grow md:flex-grow-0">
+                👤 Mi Progreso Prof.
             </button>
-            <button onclick="showTab('dashboard')" id="btnTabDash" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600">
+            <button onclick="showTab('ranking')" id="btnTabRank" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600 flex-grow md:flex-grow-0 text-yellow-700">
+                🏆 Ranking Puntos
+            </button>
+            <button onclick="showTab('dashboard')" id="btnTabDash" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600 flex-grow md:flex-grow-0">
                 📊 Dashboard General
             </button>
         </div>
@@ -122,14 +128,31 @@
 
         <div id="tabSeguimiento" class="hidden space-y-6">
             <div class="bg-white p-8 rounded-3xl shadow-2xl border border-slate-200">
-                <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
-                    <h2 class="text-2xl font-bold text-slate-800">📊 Seguimiento por Líder</h2>
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8 border-b pb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-800">💼 Perfil Profesional</h2>
+                        <p class="text-slate-500 text-sm">Monitorea tu desempeño y crecimiento</p>
+                    </div>
                     <select id="leaderSelector" onchange="updateLeaderDashboard()" class="w-full md:w-96 p-4 border-2 border-blue-100 rounded-2xl bg-white font-bold text-blue-700 outline-none focus:ring-4 focus:ring-blue-50">
-                        <option value="">Seleccione un Líder...</option>
+                        <option value="">Seleccione su nombre...</option>
                     </select>
                 </div>
 
                 <div id="leaderContent" class="hidden space-y-6">
+                    <div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-6 text-white shadow-lg flex flex-col md:flex-row items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-yellow-500 rounded-full h-16 w-16 flex items-center justify-center text-3xl shadow-lg">⭐</div>
+                            <div>
+                                <p class="text-slate-300 text-xs font-bold uppercase tracking-widest">Nivel Actual</p>
+                                <h3 id="leaderLevel" class="text-2xl font-bold text-yellow-400">INNOVADOR JUNIOR</h3>
+                            </div>
+                        </div>
+                        <div class="text-center mt-4 md:mt-0">
+                            <p class="text-4xl font-black" id="leaderPoints">0</p>
+                            <p class="text-xs text-slate-400 uppercase">Puntos Totales</p>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
                             <p class="text-xs font-bold text-blue-600 uppercase">Proyectos Asignados</p>
@@ -153,6 +176,34 @@
                             <canvas id="chartIndPresupuesto"></canvas>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tabRanking" class="hidden space-y-6">
+            <div class="bg-white p-8 rounded-3xl shadow-2xl border border-slate-200">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-black text-slate-800 uppercase tracking-tighter">🏆 Tabla de Líderes</h2>
+                    <p class="text-slate-500">Sistema de puntos basado en gestión y avance</p>
+                </div>
+
+                <div class="flex flex-col md:flex-row justify-center items-end gap-4 mb-12 h-64" id="rankingPodium">
+                    </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-500 text-xs uppercase font-bold">
+                                <th class="p-4 rounded-tl-xl">Posición</th>
+                                <th class="p-4">Líder / Ideador</th>
+                                <th class="p-4">Proyectos</th>
+                                <th class="p-4">Avance Global</th>
+                                <th class="p-4 rounded-tr-xl text-right">Puntos Totales</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rankingTableBody" class="text-sm">
+                            </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -192,15 +243,22 @@
         let charts = {};
 
         function showTab(tab) {
-            document.getElementById('tabRegistro').classList.add('hidden');
-            document.getElementById('tabSeguimiento').classList.add('hidden');
-            document.getElementById('tabDashboard').classList.add('hidden');
+            // Ocultar todas
+            ['tabRegistro', 'tabSeguimiento', 'tabDashboard', 'tabRanking'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
 
-            if(tab === 'registro') document.getElementById('tabRegistro').classList.remove('hidden');
-            if(tab === 'seguimiento') document.getElementById('tabSeguimiento').classList.remove('hidden');
-            if(tab === 'dashboard') document.getElementById('tabDashboard').classList.remove('hidden');
+            // Mostrar activa
+            const tabMap = { 
+                'registro': 'tabRegistro', 
+                'seguimiento': 'tabSeguimiento', 
+                'dashboard': 'tabDashboard',
+                'ranking': 'tabRanking' 
+            };
+            if(tabMap[tab]) document.getElementById(tabMap[tab]).classList.remove('hidden');
 
-            const btnIds = { registro: 'btnTabReg', seguimiento: 'btnTabInd', dashboard: 'btnTabDash' };
+            // Actualizar botones
+            const btnIds = { registro: 'btnTabReg', seguimiento: 'btnTabInd', dashboard: 'btnTabDash', ranking: 'btnTabRank' };
             Object.values(btnIds).forEach(id => {
                 const el = document.getElementById(id);
                 if(el) {
@@ -232,20 +290,97 @@
                     applyFilters();
                 } else if(targetTab === 'seguimiento') {
                     populateLeaderSelector();
+                } else if(targetTab === 'ranking') {
+                    renderRankingSystem();
                 }
             } catch (error) {
                 console.error("Error cargando datos:", error);
             }
         }
 
+        /* --- LÓGICA DE RANKING Y PUNTOS --- */
+        function calculateLeaderStats(leaderName) {
+            const projects = allProjects.filter(p => (p.lider || p.líder) === leaderName);
+            const totalProjects = projects.length;
+            const totalProgress = projects.reduce((acc, p) => acc + (parseFloat(p.progreso) || 0), 0);
+            const avgProgress = totalProjects > 0 ? (totalProgress / totalProjects).toFixed(1) : 0;
+            
+            // FÓRMULA DE PUNTOS: 50 pts por proyecto + 1 pto por cada % de avance acumulado
+            const points = (totalProjects * 50) + Math.round(totalProgress);
+            
+            let level = "NOVATO";
+            if(points > 100) level = "INICIADO";
+            if(points > 300) level = "EJECUTIVO";
+            if(points > 600) level = "ESTRATEGA";
+            if(points > 1000) level = "VISIONARIO";
+            if(points > 2000) level = "LEYENDA";
+
+            return { totalProjects, avgProgress, points, level, projects };
+        }
+
+        function renderRankingSystem() {
+            const leaders = [...new Set(allProjects.map(p => p.lider || p.líder))].filter(Boolean);
+            const rankingData = leaders.map(l => {
+                const stats = calculateLeaderStats(l);
+                return { name: l, ...stats };
+            }).sort((a, b) => b.points - a.points); // Ordenar mayor a menor
+
+            // Renderizar Podio
+            const podium = document.getElementById('rankingPodium');
+            podium.innerHTML = '';
+            
+            // Orden visual del podio: 2do - 1ro - 3ro
+            const podiumOrder = [1, 0, 2]; 
+            const colors = ['bg-slate-300', 'bg-yellow-400', 'bg-orange-300'];
+            const heights = ['h-32', 'h-48', 'h-24'];
+            
+            podiumOrder.forEach((idx, i) => {
+                if(rankingData[idx]) {
+                    const l = rankingData[idx];
+                    podium.innerHTML += `
+                        <div class="flex flex-col items-center animate-slide" style="animation-delay: ${i*0.1}s">
+                            <div class="font-bold text-slate-600 mb-2 text-sm text-center">${l.name.split(' ')[0]}</div>
+                            <div class="${colors[i]} ${heights[i]} w-24 rounded-t-xl shadow-lg flex items-end justify-center pb-4 relative">
+                                <span class="text-white font-black text-2xl shadow-sm">#${idx + 1}</span>
+                                <div class="absolute -top-4 bg-white px-2 py-1 rounded-full text-xs font-bold shadow">${l.points} pts</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            // Renderizar Tabla
+            const tbody = document.getElementById('rankingTableBody');
+            tbody.innerHTML = '';
+            rankingData.forEach((r, index) => {
+                tbody.innerHTML += `
+                    <tr class="border-b hover:bg-slate-50 transition-colors">
+                        <td class="p-4 font-bold text-slate-500">#${index + 1}</td>
+                        <td class="p-4 font-bold text-slate-800">${r.name}</td>
+                        <td class="p-4 text-slate-600">${r.totalProjects}</td>
+                        <td class="p-4">
+                            <div class="w-full bg-slate-200 rounded-full h-2.5 max-w-[100px]">
+                                <div class="bg-blue-600 h-2.5 rounded-full" style="width: ${r.avgProgress}%"></div>
+                            </div>
+                            <span class="text-xs text-slate-500">${r.avgProgress}%</span>
+                        </td>
+                        <td class="p-4 text-right font-black text-blue-700">${r.points}</td>
+                    </tr>
+                `;
+            });
+        }
+
         function populateLeaderSelector() {
             const selector = document.getElementById('leaderSelector');
             const leaders = [...new Set(allProjects.map(p => p.lider || p.líder))].filter(Boolean);
             
+            // Mantener selección si existe
+            const currentVal = selector.value;
             selector.innerHTML = '<option value="">Seleccione un Líder...</option>';
             leaders.forEach(l => {
                 selector.innerHTML += `<option value="${l}">${l}</option>`;
             });
+            if(currentVal) selector.value = currentVal;
         }
 
         function updateLeaderDashboard() {
@@ -256,15 +391,20 @@
             }
 
             document.getElementById('leaderContent').classList.remove('hidden');
-            const leaderProjects = allProjects.filter(p => (p.lider || p.líder) === leaderName);
+            
+            // Usar la nueva función centralizada
+            const stats = calculateLeaderStats(leaderName);
+            const leaderProjects = stats.projects;
 
-            const total = leaderProjects.length;
+            // Actualizar Tarjetas
+            document.getElementById('indTotal').innerText = stats.totalProjects;
             const pres = leaderProjects.reduce((acc, p) => acc + (parseFloat(p.presupuesto) || 0), 0);
-            const prog = total > 0 ? (leaderProjects.reduce((acc, p) => acc + (parseFloat(p.progreso) || 0), 0) / total).toFixed(1) : 0;
-
-            document.getElementById('indTotal').innerText = total;
             document.getElementById('indPres').innerText = '$' + pres.toLocaleString();
-            document.getElementById('indProg').innerText = prog + '%';
+            document.getElementById('indProg').innerText = stats.avgProgress + '%';
+
+            // Actualizar Gamificación Personal
+            document.getElementById('leaderLevel').innerText = stats.level;
+            document.getElementById('leaderPoints').innerText = stats.points;
 
             renderLeaderCharts(leaderProjects);
         }

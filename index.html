@@ -342,6 +342,12 @@
                             <option value="En Ejecución">En Ejecución</option>
                         </select>
                     </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-sky-700 uppercase mb-1">Comentario Administrativo</label>
+                        <textarea id="mAdminComentario" rows="3" class="w-full p-2 border rounded bg-white text-sm" placeholder="Agrega observaciones internas..."></textarea>
+                    </div>
+
                     <button onclick="guardarRevisionAdmin()" class="w-full bg-sky-600 text-white py-2 rounded-lg font-bold hover:bg-sky-700">Guardar Revisión</button>
                 </div>
             </div>
@@ -380,6 +386,7 @@
                 status: 'Revisada',
                 clasificacion: 'Mejora de Proceso',
                 via: 'Sistema',
+                adminComment: 'Aprobado, asignar a equipo de desarrollo.', // Ejemplo de comentario
                 history: [{fecha: '2025-10-01', user: 'Juan Pérez', cambio: 'Creación'}]
             });
             DB.ideas.push({
@@ -394,6 +401,7 @@
                 status: 'Registrada',
                 clasificacion: '',
                 via: 'Sistema',
+                adminComment: '',
                 history: [{fecha: new Date().toISOString().split('T')[0], user: 'Maria Gomez', cambio: 'Creación'}]
             });
         }
@@ -546,6 +554,7 @@
                 status: 'Registrada',
                 clasificacion: '',
                 via: 'Sistema',
+                adminComment: '',
                 history: [{
                     fecha: new Date().toISOString(),
                     user: document.getElementById('nombreEmpleado').value,
@@ -598,6 +607,7 @@
                 status: 'Revisada', 
                 clasificacion: 'Manual Admin',
                 via: document.getElementById('adminVia').value,
+                adminComment: 'Carga manual',
                 history: [{
                     fecha: new Date().toISOString(),
                     user: adminUser,
@@ -682,11 +692,14 @@
             document.getElementById('mUsuario').innerText = idea.nombre;
             document.getElementById('mDesc').innerText = idea.desc;
             document.getElementById('mDetalle').innerText = idea.detalle;
+            
             const adminPanel = document.getElementById('adminControls');
             if(modoAdmin && currentUser === 'admin') {
                 adminPanel.classList.remove('hidden');
                 document.getElementById('mAdminClasif').value = idea.clasificacion || "";
                 document.getElementById('mAdminStatus').value = idea.status;
+                // Cargar comentario existente si lo hay
+                document.getElementById('mAdminComentario').value = idea.adminComment || "";
             } else {
                 adminPanel.classList.add('hidden');
             }
@@ -705,8 +718,12 @@
             const idea = DB.ideas.find(i => i.id === currentIdeaIdEditing);
             const nuevoStatus = document.getElementById('mAdminStatus').value;
             const nuevaClasif = document.getElementById('mAdminClasif').value;
+            const nuevoComentario = document.getElementById('mAdminComentario').value;
+
             idea.status = nuevoStatus;
             idea.clasificacion = nuevaClasif;
+            idea.adminComment = nuevoComentario;
+
             if(typeof Swal !== 'undefined') Swal.fire('Guardado', 'Revisión actualizada', 'success');
             else alert('Guardado');
             cerrarModal();
@@ -725,7 +742,6 @@
             document.getElementById('kpiUsuarios').innerText = users.size;
         }
 
-        // CAMBIO: Lógica modificada para colocar Revisadas (Verde) a la derecha e Registradas (Amarillo) a la izquierda.
         function actualizarGraficos() {
             const ctxStatus = document.getElementById('chartStatus');
             const ctxClasif = document.getElementById('chartClasificacion');
@@ -747,8 +763,6 @@
 
             // GRÁFICO CIRCULAR:
             // Orden: Revisadas primero, luego Registradas.
-            // ChartJS llena en sentido horario empezando arriba.
-            // Revisadas (Verde) ocupará la derecha. Registradas (Amarillo) ocupará la izquierda.
             charts.status = new Chart(ctxStatus, {
                 type: 'doughnut',
                 data: {

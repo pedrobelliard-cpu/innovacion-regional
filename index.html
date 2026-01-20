@@ -1,9 +1,11 @@
+/* NotaLa clave de administrador sigue siendo interna (1234), invisible para los usuarios */
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lanza tu idea | Sistema de Innovación</title>
+    <title>Lanza tu idea 0.1 | Sistema de Innovación</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -29,7 +31,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
-                    <span class="text-2xl font-black italic text-slate-800 tracking-tighter">Lanza <span class="text-blue-600">tu idea</span></span>
+                    <span class="text-2xl font-black italic text-slate-800 tracking-tighter">Lanza <span class="text-blue-600">tu idea 0.1</span></span>
                 </div>
                 <div class="flex items-center gap-4">
                     <span id="userInfo" class="text-sm font-medium text-slate-500"></span>
@@ -412,7 +414,7 @@
                     Swal.fire({
                         title: 'Seguridad',
                         input: 'password',
-                        inputLabel: 'Ingrese su clave de administrador', // TEXTO MODIFICADO
+                        inputLabel: 'Ingrese su clave de administrador', 
                         inputPlaceholder: 'Su clave...',
                         confirmButtonText: 'Entrar',
                         confirmButtonColor: '#0ea5e9', // Sky Blue
@@ -429,7 +431,7 @@
                     });
                 } else {
                     // FALLBACK: Si no hay internet o falla la librería, usar prompt nativo
-                    const pass = prompt("Ingrese clave de administrador:"); // TEXTO MODIFICADO
+                    const pass = prompt("Ingrese clave de administrador:"); 
                     if (pass === '1234') {
                         ejecutarLogin(role);
                     } else if (pass !== null) {
@@ -724,13 +726,17 @@
             document.getElementById('kpiUsuarios').innerText = users.size;
         }
 
+        // CAMBIO: Lógica modificada para colocar Revisadas (Verde) a la derecha e Registradas (Amarillo) a la izquierda.
         function actualizarGraficos() {
             const ctxStatus = document.getElementById('chartStatus');
             const ctxClasif = document.getElementById('chartClasificacion');
             if(!ctxStatus || !ctxClasif) return;
             
-            const statusCounts = {};
-            DB.ideas.forEach(i => { statusCounts[i.status] = (statusCounts[i.status] || 0) + 1; });
+            // Contamos manualmente
+            const countRegistradas = DB.ideas.filter(i => i.status === 'Registrada').length;
+            const countRevisadas = DB.ideas.filter(i => i.status === 'Revisada').length;
+            const countEjecucion = DB.ideas.filter(i => i.status === 'En Ejecución').length;
+
             const clasifCounts = {};
             DB.ideas.forEach(i => { 
                 const c = i.clasificacion || 'Sin Clasificar';
@@ -740,13 +746,17 @@
             if(charts.status) charts.status.destroy();
             if(charts.clasif) charts.clasif.destroy();
 
+            // GRÁFICO CIRCULAR:
+            // Orden: Revisadas primero, luego Registradas.
+            // ChartJS llena en sentido horario empezando arriba.
+            // Revisadas (Verde) ocupará la derecha. Registradas (Amarillo) ocupará la izquierda.
             charts.status = new Chart(ctxStatus, {
                 type: 'doughnut',
                 data: {
-                    labels: Object.keys(statusCounts),
+                    labels: ['Revisadas', 'Registradas', 'En Ejecución'],
                     datasets: [{
-                        data: Object.values(statusCounts),
-                        backgroundColor: ['#facc15', '#22c55e', '#3b82f6']
+                        data: [countRevisadas, countRegistradas, countEjecucion],
+                        backgroundColor: ['#22c55e', '#facc15', '#3b82f6'] // Verde, Amarillo, Azul
                     }]
                 }
             });

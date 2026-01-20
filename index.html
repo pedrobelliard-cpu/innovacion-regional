@@ -1,524 +1,760 @@
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lanza tu idea | Business Intelligence</title>
+    <title>Lanza tu idea | Sistema de Innovación</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style> 
         body { font-family: 'Inter', sans-serif; }
-        .tab-active { background-color: white !important; color: #1d4ed8 !important; border-top: 1px solid #e2e8f0; border-left: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; }
-        /* Animación para el ranking */
-        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-slide { animation: slideIn 0.5s ease-out forwards; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Colores específicos de los requerimientos */
+        .btn-registar { background-color: #16a34a; color: white; } /* Verde */
+        .btn-registar:hover { background-color: #15803d; }
+        .btn-cancelar { background-color: #dc2626; color: white; } /* Rojo */
+        .btn-cancelar:hover { background-color: #b91c1c; }
+        .btn-limpiar { background-color: #facc15; color: #854d0e; } /* Amarillo */
+        .btn-limpiar:hover { background-color: #eab308; }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen pb-12 text-slate-800">
-    <div class="max-w-6xl mx-auto pt-6 px-4">
-        
-        <div class="flex flex-wrap gap-2">
-            <button onclick="showTab('registro')" id="btnTabReg" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600 flex-grow md:flex-grow-0">
-                📝 Registrar
-            </button>
-            <button onclick="showTab('seguimiento')" id="btnTabInd" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600 flex-grow md:flex-grow-0">
-                👤 Mi Progreso Prof.
-            </button>
-            <button onclick="showTab('ranking')" id="btnTabRank" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600 flex-grow md:flex-grow-0 text-yellow-700">
-                🏆 Ranking Puntos
-            </button>
-            <button onclick="showTab('dashboard')" id="btnTabDash" class="px-6 py-3 rounded-t-2xl font-bold transition-all bg-slate-200 text-slate-600 flex-grow md:flex-grow-0">
-                📊 Dashboard General
-            </button>
-        </div>
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col">
 
-        <div id="tabRegistro" class="bg-white shadow-2xl rounded-b-3xl rounded-tr-3xl border border-slate-200 overflow-hidden">
-            <div class="bg-blue-700 p-6 text-white flex justify-between items-center">
-                <div>
-                    <h1 class="text-2xl font-bold italic">Lanza <span class="text-blue-300">tu idea</span></h1>
-                    <p class="text-sm opacity-80">Gestión de ideas para proyectos estratégicos</p>
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-black italic text-slate-800 tracking-tighter">Lanza <span class="text-blue-600">tu idea</span></span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span id="userInfo" class="text-sm font-medium text-slate-500"></span>
+                    <button onclick="logout()" id="btnLogout" class="hidden text-xs font-bold text-red-500 hover:text-red-700 uppercase">Cerrar Sesión</button>
                 </div>
             </div>
+        </div>
+    </nav>
 
-            <form id="innovationForm" class="p-8 space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <input type="text" name="lider" placeholder="Líder" required class="p-3 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
-                    <input type="text" name="cedula" placeholder="Cédula" required class="p-3 border rounded-xl outline-none">
-                    <input type="text" name="telefono" placeholder="Teléfono" required class="p-3 border rounded-xl outline-none">
-                </div>
+    <div id="viewLogin" class="flex-grow flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
+            <div class="bg-blue-600 p-8 text-center">
+                <h1 class="text-3xl font-bold text-white mb-2">Bienvenido</h1>
+                <p class="text-blue-100">Selecciona tu perfil para ingresar</p>
+            </div>
+            <div class="p-8 space-y-4">
+                <button onclick="login('ideador')" class="w-full p-4 rounded-xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 transition-all flex items-center gap-4 group">
+                    <div class="bg-blue-100 p-3 rounded-full text-2xl group-hover:scale-110 transition-transform">💡</div>
+                    <div class="text-left">
+                        <h3 class="font-bold text-slate-800">Soy Ideador</h3>
+                        <p class="text-xs text-slate-500">Registrar y consultar mis ideas</p>
+                    </div>
+                </button>
+                <button onclick="login('admin')" class="w-full p-4 rounded-xl border-2 border-slate-100 hover:border-purple-500 hover:bg-purple-50 transition-all flex items-center gap-4 group">
+                    <div class="bg-purple-100 p-3 rounded-full text-2xl group-hover:scale-110 transition-transform">🛡️</div>
+                    <div class="text-left">
+                        <h3 class="font-bold text-slate-800">Soy Administrador</h3>
+                        <p class="text-xs text-slate-500">Gestionar, revisar y reportes</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <input type="text" name="proyecto" placeholder="Nombre del Proyecto" required class="md:col-span-2 p-3 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
-                    <select name="prioridad" class="p-3 border rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="" disabled selected>Prioridad</option>
-                        <option>Alta</option><option>Media</option><option>Baja</option>
-                    </select>
-                    <div class="relative">
-                        <span class="absolute left-3 top-3 text-slate-400">$</span>
-                        <input type="number" name="presupuesto" placeholder="Presupuesto" required class="w-full p-3 pl-7 border rounded-xl outline-none border-green-200 focus:ring-2 focus:ring-green-500">
+    <main id="viewIdeador" class="hidden max-w-5xl mx-auto w-full p-6 space-y-6 fade-in">
+        
+        <div id="ideadorHome" class="space-y-8">
+            <div class="text-center py-10">
+                <h2 class="text-4xl font-bold text-slate-800 mb-4">¿Tienes una idea innovadora?</h2>
+                <p class="text-lg text-slate-600 max-w-2xl mx-auto" id="systemDescription">
+                    Este es el sistema oficial para registrar, revisar y clasificar las ideas de innovación para su posterior ejecución. Tu creatividad impulsa nuestro crecimiento.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+                <button onclick="navIdeador('formulario')" class="bg-white p-8 rounded-3xl shadow-lg border border-slate-200 hover:shadow-2xl hover:-translate-y-1 transition-all text-center group">
+                    <div class="text-6xl mb-6 group-hover:scale-110 transition-transform duration-300">🚀</div>
+                    <h3 class="text-2xl font-bold text-blue-600 mb-2">Lanza tu idea</h3>
+                    <p class="text-slate-500">Accede al formulario para registrar una nueva propuesta.</p>
+                </button>
+                <button onclick="navIdeador('lista')" class="bg-white p-8 rounded-3xl shadow-lg border border-slate-200 hover:shadow-2xl hover:-translate-y-1 transition-all text-center group">
+                    <div class="text-6xl mb-6 group-hover:scale-110 transition-transform duration-300">📂</div>
+                    <h3 class="text-2xl font-bold text-slate-700 mb-2">Ideas Lanzadas</h3>
+                    <p class="text-slate-500">Consulta el histórico y estatus de tus ideas registradas.</p>
+                </button>
+            </div>
+        </div>
+
+        <div id="ideadorForm" class="hidden bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
+            <div class="bg-slate-50 p-6 border-b border-slate-200 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-slate-700">📝 Formulario de Registro</h3>
+                <button onclick="navIdeador('home')" class="text-sm font-bold text-slate-500 hover:text-blue-600">← Volver al inicio</button>
+            </div>
+            <form id="formIdea" class="p-8 space-y-6">
+                <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-blue-800 uppercase mb-1">No. Empleado <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <input type="text" id="idEmpleado" onkeyup="simularAutocompletado(this.value)" class="w-full p-3 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ej: 1010" required>
+                                <span class="absolute right-3 top-3 text-xs text-slate-400 pointer-events-none">Escribe "1010"</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Nombre Completo</label>
+                            <input type="text" id="nombreEmpleado" class="w-full p-3 bg-slate-200 border border-slate-300 rounded-xl text-slate-600" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Correo Electrónico</label>
+                            <input type="text" id="correoEmpleado" class="w-full p-3 bg-slate-200 border border-slate-300 rounded-xl text-slate-600" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Dirección / Depto</label>
+                            <input type="text" id="direccionEmpleado" class="w-full p-3 bg-slate-200 border border-slate-300 rounded-xl text-slate-600" readonly>
+                        </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <select name="regional" required class="p-3 border rounded-xl bg-white">
-                        <option value="" disabled selected>Regional</option>
-                        <option>Metropolitana</option><option>Valdesia</option><option>Cibao Norte</option>
-                        <option>Cibao Sur</option><option>Oriental</option><option>Regional Sur</option>
-                        <option>ONA</option><option>ECI</option>
-                    </select>
-                    
-                    <select name="taller" required class="p-3 border rounded-xl bg-white">
-                        <option value="" disabled selected>Departamento o Taller</option>
-                        <optgroup label="Talleres Técnicos">
-                            <option>Mecánica Automotriz</option><option>Mecánica Industrial</option><option>Electrónica</option>
-                            <option>Refrigeración</option><option>Electricidad</option><option>Informática</option>
-                            <option>Diseño Gráfico y Web</option><option>Administración</option><option>Ventas</option>
-                            <option>Panadería</option><option>Repostería</option><option>Confección de Ropa</option>
-                            <option>Telecomunicaciones</option><option>Artes Gráficas</option><option>Producción de TV</option>
-                            <option>Energías Renovables</option><option>Masaje</option><option>Desarrollo Profesional</option>
-                        </optgroup>
-                        <optgroup label="Direcciones y Departamentos">
-                            <option>Dirección de TI y Comunicaciones</option>
-                            <option>Dirección de Control Interno</option>
-                            <option>Dirección de Comunicaciones</option>
-                            <option>Dirección de Administración y Finanzas</option>
-                            <option>Dirección de Gestión Humana</option>
-                            <option>Dirección de Planificación y Desarrollo</option>
-                            <option>Dirección de Competitividad Empresarial</option>
-                            <option>Dirección de Rectoría y Regulación Centros</option>
-                            <option>Dirección de Innovación y Análisis Estratégico de Datos</option>
-                            <option>División Promoción Ingresos</option>
-                            <option>División Control de Operaciones</option>
-                            <option>División de Fiscalización</option>
-                            <option>División Gestión Legal</option>
-                            <option>Departamento de Planes y Proyectos</option>
-                            <option>Departamento de Gestión de Proyectos</option>
-                            <option>Departamento de Investigación</option>
-                            <option>División de Monitoreo y Evaluación Prospectiva</option>
-                            <option>Departamento de Desarrollo Institucional</option>
-                            <option>Departamento de Gestión y Calidad</option>
-                            <option>División de Medio Ambiente</option>
-                            <option>División de Auditoría Interna del SGC</option>
-                            <option>Departamento Formación de Programas Especiales</option>
-                            <option>División Formación Dual</option>
-                            <option>Departamento de Acreditación de Centros</option>
-                            <option>Departamento de Prensa y RR.PP</option>
-                            <option>División de Medios Audiovisuales</option>
-                            <option>Departamento Financiero</option>
-                            <option>División de Contabilidad</option>
-                            <option>División de Tesorería</option>
-                            <option>Caja</option>
-                            <option>Departamento de Seguridad</option>
-                        </optgroup>
-                    </select>
-
-                    <input type="date" name="fecha" required class="p-3 border rounded-xl bg-white">
-                    
-                    <div class="bg-blue-50 p-4 rounded-xl border-2 border-blue-200">
-                        <div class="flex justify-between items-center mb-2 text-[10px] font-bold text-blue-800">PROGRESO <span id="rangeValue">0%</span></div>
-                        <input type="range" name="progreso" min="0" max="100" value="0" class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-700" oninput="document.getElementById('rangeValue').innerText = this.value + '%'">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Descripción de la Idea <span class="text-red-500">*</span></label>
+                        <textarea id="descIdea" rows="2" class="w-full p-3 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="Título corto o resumen de la idea..." required></textarea>
+                        <button type="button" onclick="limpiarCampo('descIdea')" class="text-xs text-red-400 hover:text-red-600 mt-1">Borrar campo</button>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Detalle <span class="text-red-500">*</span></label>
+                        <textarea id="detalleIdea" rows="5" class="w-full p-3 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="Explica detalladamente en qué consiste..." required></textarea>
+                        <button type="button" onclick="limpiarCampo('detalleIdea')" class="text-xs text-red-400 hover:text-red-600 mt-1">Borrar campo</button>
                     </div>
                 </div>
 
-                <textarea name="descripcion" rows="3" required class="w-full p-3 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="Descripción..."></textarea>
-                <button type="submit" id="submitBtn" class="w-full bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-blue-800 transition-all">💾 GUARDAR PROYECTO</button>
+                <div class="flex flex-col md:flex-row gap-4 pt-4 border-t border-slate-100">
+                    <button type="submit" class="btn-registar py-3 px-6 rounded-xl font-bold flex-1 shadow-md transition-transform active:scale-95">
+                        Registrar Idea
+                    </button>
+                    <button type="button" onclick="limpiarFormulario()" class="btn-limpiar py-3 px-6 rounded-xl font-bold flex-1 shadow-md transition-transform active:scale-95">
+                        Limpiar Campos
+                    </button>
+                    <button type="button" onclick="cancelarProceso()" class="btn-cancelar py-3 px-6 rounded-xl font-bold flex-1 shadow-md transition-transform active:scale-95">
+                        Cancelar
+                    </button>
+                </div>
             </form>
         </div>
 
-        <div id="tabSeguimiento" class="hidden space-y-6">
-            <div class="bg-white p-8 rounded-3xl shadow-2xl border border-slate-200">
-                <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8 border-b pb-6">
-                    <div>
-                        <h2 class="text-2xl font-bold text-slate-800">💼 Perfil Profesional</h2>
-                        <p class="text-slate-500 text-sm">Monitorea tu desempeño y crecimiento</p>
-                    </div>
-                    <select id="leaderSelector" onchange="updateLeaderDashboard()" class="w-full md:w-96 p-4 border-2 border-blue-100 rounded-2xl bg-white font-bold text-blue-700 outline-none focus:ring-4 focus:ring-blue-50">
-                        <option value="">Seleccione su nombre...</option>
-                    </select>
+        <div id="ideadorLista" class="hidden space-y-4">
+            <div class="flex justify-between items-end">
+                <h3 class="text-2xl font-bold text-slate-800">📂 Mis Ideas Lanzadas</h3>
+                <div class="space-x-2">
+                    <button onclick="navIdeador('formulario')" class="text-blue-600 font-bold text-sm bg-blue-50 px-4 py-2 rounded-lg hover:bg-blue-100">Nueva Idea</button>
+                    <button onclick="navIdeador('home')" class="text-slate-500 font-bold text-sm bg-white px-4 py-2 rounded-lg hover:bg-slate-100">Volver Inicio</button>
                 </div>
+            </div>
 
-                <div id="leaderContent" class="hidden space-y-6">
-                    <div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-6 text-white shadow-lg flex flex-col md:flex-row items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="bg-yellow-500 rounded-full h-16 w-16 flex items-center justify-center text-3xl shadow-lg">⭐</div>
-                            <div>
-                                <p class="text-slate-300 text-xs font-bold uppercase tracking-widest">Nivel Actual</p>
-                                <h3 id="leaderLevel" class="text-2xl font-bold text-yellow-400">INNOVADOR JUNIOR</h3>
-                            </div>
-                        </div>
-                        <div class="text-center mt-4 md:mt-0">
-                            <p class="text-4xl font-black" id="leaderPoints">0</p>
-                            <p class="text-xs text-slate-400 uppercase">Puntos Totales</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-                            <p class="text-xs font-bold text-blue-600 uppercase">Proyectos Asignados</p>
-                            <h3 id="indTotal" class="text-3xl font-bold">0</h3>
-                        </div>
-                        <div class="bg-green-50 p-6 rounded-2xl border border-green-100">
-                            <p class="text-xs font-bold text-green-600 uppercase">Presupuesto Gestionado</p>
-                            <h3 id="indPres" class="text-3xl font-bold">$0</h3>
-                        </div>
-                        <div class="bg-orange-50 p-6 rounded-2xl border border-orange-100">
-                            <p class="text-xs font-bold text-orange-600 uppercase">Avance Promedio</p>
-                            <h3 id="indProg" class="text-3xl font-bold">0%</h3>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-white p-4 rounded-2xl border shadow-sm">
-                            <canvas id="chartIndProgreso"></canvas>
-                        </div>
-                        <div class="bg-white p-4 rounded-2xl border shadow-sm">
-                            <canvas id="chartIndPresupuesto"></canvas>
-                        </div>
-                    </div>
-                </div>
+            <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-100 text-slate-500 text-xs uppercase font-bold">
+                        <tr>
+                            <th class="p-4">ID</th>
+                            <th class="p-4">Fecha</th>
+                            <th class="p-4">Descripción</th>
+                            <th class="p-4">Estatus</th>
+                            <th class="p-4 text-center">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaMisIdeas" class="text-sm divide-y divide-slate-100">
+                        </tbody>
+                </table>
             </div>
         </div>
+    </main>
 
-        <div id="tabRanking" class="hidden space-y-6">
-            <div class="bg-white p-8 rounded-3xl shadow-2xl border border-slate-200">
-                <div class="text-center mb-10">
-                    <h2 class="text-3xl font-black text-slate-800 uppercase tracking-tighter">🏆 Tabla de Líderes</h2>
-                    <p class="text-slate-500">Sistema de puntos basado en gestión y avance</p>
-                </div>
-
-                <div class="flex flex-col md:flex-row justify-center items-end gap-4 mb-12 h-64" id="rankingPodium">
-                    </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-100 text-slate-500 text-xs uppercase font-bold">
-                                <th class="p-4 rounded-tl-xl">Posición</th>
-                                <th class="p-4">Líder / Ideador</th>
-                                <th class="p-4">Proyectos</th>
-                                <th class="p-4">Avance Global</th>
-                                <th class="p-4 rounded-tr-xl text-right">Puntos Totales</th>
-                            </tr>
-                        </thead>
-                        <tbody id="rankingTableBody" class="text-sm">
-                            </tbody>
-                    </table>
+    <main id="viewAdmin" class="hidden max-w-7xl mx-auto w-full p-6 space-y-6 fade-in">
+        
+        <div id="adminDashboard">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-slate-800">📊 Dashboard General</h2>
+                <div class="flex gap-2">
+                    <button onclick="navAdmin('registrar')" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-blue-700">Registrar Idea (Manual)</button>
+                    <button onclick="navAdmin('inbox')" class="bg-white text-slate-700 border border-slate-300 px-4 py-2 rounded-lg font-bold text-sm hover:bg-slate-50">📥 Ideas Registradas</button>
+                    <button onclick="navAdmin('revisadas')" class="bg-white text-slate-700 border border-slate-300 px-4 py-2 rounded-lg font-bold text-sm hover:bg-slate-50">✅ Ideas Revisadas</button>
                 </div>
             </div>
-        </div>
 
-        <div id="tabDashboard" class="hidden space-y-6">
-            <div class="bg-white p-6 rounded-3xl shadow-lg border border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                <div class="md:col-span-2">
-                    <label class="text-xs font-bold text-slate-500 uppercase">Regional</label>
-                    <select id="fRegional" onchange="applyFilters()" class="w-full p-3 border rounded-xl bg-slate-50">
-                        <option value="Todas">Todas</option>
-                        <option>Metropolitana</option><option>Valdesia</option><option>Cibao Norte</option>
-                        <option>Cibao Sur</option><option>Oriental</option><option>Regional Sur</option>
-                        <option>ONA</option><option>ECI</option>
-                    </select>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="bg-white p-4 rounded-2xl shadow border-l-4 border-blue-500">
+                    <p class="text-xs text-slate-500 font-bold uppercase">Total Registradas</p>
+                    <p id="kpiTotalIdeas" class="text-3xl font-black text-slate-800">0</p>
                 </div>
-                <div><label class="text-xs font-bold text-slate-500 uppercase">Desde</label><input type="date" id="fInicio" onchange="applyFilters()" class="w-full p-3 border rounded-xl"></div>
-                <div><button onclick="resetFilters()" class="w-full bg-slate-200 text-slate-600 p-3 rounded-xl font-bold hover:bg-slate-300 uppercase text-xs">Limpiar</button></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-blue-600"><p class="text-slate-500 text-[10px] font-bold uppercase">Proyectos</p><h2 id="kpiTotal" class="text-3xl font-bold text-blue-700">0</h2></div>
-                <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-green-600"><p class="text-slate-500 text-[10px] font-bold uppercase">Inversión</p><h2 id="kpiPresupuesto" class="text-3xl font-bold text-green-600">$0</h2></div>
-                <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-orange-500"><p class="text-slate-500 text-[10px] font-bold uppercase">Avance Promedio</p><h2 id="kpiAvance" class="text-3xl font-bold text-orange-500">0%</h2></div>
+                <div class="bg-white p-4 rounded-2xl shadow border-l-4 border-yellow-500">
+                    <p class="text-xs text-slate-500 font-bold uppercase">Pendientes Revisión</p>
+                    <p id="kpiPendientes" class="text-3xl font-black text-slate-800">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-2xl shadow border-l-4 border-green-500">
+                    <p class="text-xs text-slate-500 font-bold uppercase">Aprobadas/Revisadas</p>
+                    <p id="kpiAprobadas" class="text-3xl font-black text-slate-800">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-2xl shadow border-l-4 border-purple-500">
+                    <p class="text-xs text-slate-500 font-bold uppercase">Usuarios Activos</p>
+                    <p id="kpiUsuarios" class="text-3xl font-black text-slate-800">0</p>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-6 rounded-2xl shadow border"><canvas id="chartRegional"></canvas></div>
-                <div class="bg-white p-6 rounded-2xl shadow border"><canvas id="chartPrioridad"></canvas></div>
+                <div class="bg-white p-6 rounded-2xl shadow border border-slate-100">
+                    <h4 class="font-bold text-slate-700 mb-4">Ideas por Estatus</h4>
+                    <canvas id="chartStatus"></canvas>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow border border-slate-100">
+                    <h4 class="font-bold text-slate-700 mb-4">Ideas por Clasificación</h4>
+                    <canvas id="chartClasificacion"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div id="adminInbox" class="hidden">
+            <div class="flex items-center gap-4 mb-6">
+                <button onclick="navAdmin('dashboard')" class="text-slate-400 hover:text-slate-600">← Atrás</button>
+                <h2 class="text-2xl font-bold text-slate-800">📥 Ideas por Revisar</h2>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-yellow-50 text-yellow-800 text-xs uppercase font-bold border-b border-yellow-100">
+                        <tr>
+                            <th class="p-4">Fecha</th>
+                            <th class="p-4">Empleado</th>
+                            <th class="p-4">Descripción</th>
+                            <th class="p-4 text-center">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaInbox" class="text-sm divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="adminRevisadas" class="hidden">
+             <div class="flex items-center gap-4 mb-6">
+                <button onclick="navAdmin('dashboard')" class="text-slate-400 hover:text-slate-600">← Atrás</button>
+                <h2 class="text-2xl font-bold text-slate-800">✅ Ideas Revisadas (Histórico)</h2>
+            </div>
+             <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-green-50 text-green-800 text-xs uppercase font-bold border-b border-green-100">
+                        <tr>
+                            <th class="p-4">Fecha</th>
+                            <th class="p-4">Nombre</th>
+                            <th class="p-4">Descripción</th>
+                            <th class="p-4">Clasificación</th>
+                            <th class="p-4 text-center">Detalle</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaRevisadas" class="text-sm divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="adminForm" class="hidden">
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden max-w-4xl mx-auto">
+                <div class="bg-purple-600 p-6 flex justify-between items-center">
+                    <h3 class="text-xl font-bold text-white">Registrar Idea (Vía Externa)</h3>
+                </div>
+                <form id="formAdminManual" class="p-8 space-y-6">
+                    <p class="text-sm text-slate-500 bg-slate-100 p-3 rounded-lg border-l-4 border-purple-500 mb-4">
+                        Nota: Las ideas registradas aquí pasarán automáticamente al estatus "Revisada".
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">No. Empleado</label>
+                            <input type="text" id="adminIdEmp" onkeyup="simularAutocompletadoAdmin(this.value)" class="w-full p-3 border rounded-xl" required>
+                        </div>
+                        <div><label class="text-xs font-bold text-slate-500 uppercase">Nombre</label><input type="text" id="adminNomEmp" class="w-full p-3 bg-slate-100 rounded-xl" readonly></div>
+                        <div><label class="text-xs font-bold text-slate-500 uppercase">Correo</label><input type="text" id="adminMailEmp" class="w-full p-3 bg-slate-100 rounded-xl" readonly></div>
+                        <div><label class="text-xs font-bold text-slate-500 uppercase">Dirección</label><input type="text" id="adminDirEmp" class="w-full p-3 bg-slate-100 rounded-xl" readonly></div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Descripción</label>
+                        <textarea id="adminDesc" rows="2" class="w-full p-3 border rounded-xl" required></textarea>
+                        <button type="button" onclick="limpiarCampo('adminDesc')" class="text-xs text-red-400 mt-1">Borrar</button>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Detalle</label>
+                        <textarea id="adminDetalle" rows="4" class="w-full p-3 border rounded-xl" required></textarea>
+                        <button type="button" onclick="limpiarCampo('adminDetalle')" class="text-xs text-red-400 mt-1">Borrar</button>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-purple-700 uppercase mb-1">Vía de Recepción</label>
+                        <select id="adminVia" class="w-full p-3 border rounded-xl bg-white">
+                            <option>Correo Electrónico</option>
+                            <option>Buzón Físico</option>
+                            <option>Reunión</option>
+                            <option>Llamada</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row gap-4 pt-4 border-t">
+                        <button type="submit" class="btn-registar py-3 px-6 rounded-xl font-bold flex-1">Registrar Idea</button>
+                        <button type="button" onclick="document.getElementById('formAdminManual').reset()" class="btn-limpiar py-3 px-6 rounded-xl font-bold flex-1">Limpiar Campos</button>
+                        <button type="button" onclick="navAdmin('dashboard')" class="btn-cancelar py-3 px-6 rounded-xl font-bold flex-1">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="modalDetalle" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden animate-slide-up">
+            <div class="bg-slate-800 p-4 flex justify-between items-center text-white">
+                <h3 class="font-bold">Detalle de la Idea <span id="modalId" class="text-blue-300 ml-2"></span></h3>
+                <button onclick="cerrarModal()" class="text-white hover:text-red-400 font-bold text-xl">✕</button>
+            </div>
+            <div class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div><span class="block text-xs font-bold text-slate-400 uppercase">Fecha</span><span id="mFecha" class="font-semibold"></span></div>
+                    <div><span class="block text-xs font-bold text-slate-400 uppercase">Usuario</span><span id="mUsuario" class="font-semibold"></span></div>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border">
+                    <span class="block text-xs font-bold text-slate-400 uppercase mb-1">Descripción</span>
+                    <p id="mDesc" class="text-slate-800 font-medium"></p>
+                </div>
+                <div>
+                    <span class="block text-xs font-bold text-slate-400 uppercase mb-1">Detalle Completo</span>
+                    <p id="mDetalle" class="text-slate-600 text-sm whitespace-pre-wrap"></p>
+                </div>
+                
+                <div id="adminControls" class="hidden border-t pt-4 mt-4 space-y-4">
+                    <h4 class="font-bold text-purple-700 text-sm uppercase">Gestión Administrativa</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <select id="mAdminClasif" class="p-2 border rounded bg-white text-sm">
+                            <option value="" disabled selected>Clasificar como...</option>
+                            <option>Mejora de Proceso</option>
+                            <option>Nuevo Producto</option>
+                            <option>Ahorro de Costos</option>
+                            <option>Cultura Organizacional</option>
+                        </select>
+                        <select id="mAdminStatus" class="p-2 border rounded bg-white text-sm">
+                            <option value="Registrada">Registrada (Pendiente)</option>
+                            <option value="Revisada">Revisada (Completado)</option>
+                            <option value="En Ejecución">En Ejecución</option>
+                        </select>
+                    </div>
+                    <button onclick="guardarRevisionAdmin()" class="w-full bg-purple-600 text-white py-2 rounded-lg font-bold hover:bg-purple-700">Guardar Revisión</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = 'ESCRIBE_AQUI_TU_NUEVO_URL'; 
-        let allProjects = [];
-        let filteredData = [];
-        let charts = {};
+        // --- BASE DE DATOS SIMULADA ---
+        const DB = {
+            ideas: [],
+            logs: [],
+            config: {
+                description: "Es un sistema a través del cual se registran, revisan, clasifican y guardan las ideas de innovación para su posterior ejecución."
+            }
+        };
 
-        function showTab(tab) {
-            // Ocultar todas
-            ['tabRegistro', 'tabSeguimiento', 'tabDashboard', 'tabRanking'].forEach(id => {
-                document.getElementById(id).classList.add('hidden');
+        let currentUser = null; // 'ideador' | 'admin'
+        let currentIdeaIdEditing = null;
+
+        // Inicializar con algunos datos dummy
+        function initDB() {
+            // Idea vieja revisada
+            DB.ideas.push({
+                id: 'ID-1001',
+                fecha: '2025-10-01',
+                idEmp: '1010',
+                nombre: 'Juan Pérez',
+                correo: 'juan@empresa.com',
+                direccion: 'TI',
+                desc: 'Automatizar reportes de asistencia',
+                detalle: 'Usar Python para leer los logs del reloj biométrico...',
+                status: 'Revisada',
+                clasificacion: 'Mejora de Proceso',
+                via: 'Sistema',
+                history: [{fecha: '2025-10-01', user: 'Juan Pérez', cambio: 'Creación'}]
             });
+            // Idea nueva pendiente
+            DB.ideas.push({
+                id: 'ID-1002',
+                fecha: new Date().toISOString().split('T')[0],
+                idEmp: '2020',
+                nombre: 'Maria Gomez',
+                correo: 'maria@empresa.com',
+                direccion: 'RRHH',
+                desc: 'Cafetería Saludable',
+                detalle: 'Incluir opciones vegetarianas en el menú diario.',
+                status: 'Registrada',
+                clasificacion: '',
+                via: 'Sistema',
+                history: [{fecha: new Date().toISOString().split('T')[0], user: 'Maria Gomez', cambio: 'Creación'}]
+            });
+            actualizarGraficos();
+        }
 
-            // Mostrar activa
-            const tabMap = { 
-                'registro': 'tabRegistro', 
-                'seguimiento': 'tabSeguimiento', 
-                'dashboard': 'tabDashboard',
-                'ranking': 'tabRanking' 
+        // --- SISTEMA DE LOGIN Y NAVEGACIÓN ---
+        function login(role) {
+            currentUser = role;
+            document.getElementById('viewLogin').classList.add('hidden');
+            document.getElementById('btnLogout').classList.remove('hidden');
+            
+            if(role === 'ideador') {
+                document.getElementById('viewIdeador').classList.remove('hidden');
+                document.getElementById('userInfo').innerText = "👤 Vista Ideador";
+                document.getElementById('systemDescription').innerText = DB.config.description;
+                navIdeador('home');
+            } else {
+                document.getElementById('viewAdmin').classList.remove('hidden');
+                document.getElementById('userInfo').innerText = "🛡️ Vista Administrador";
+                navAdmin('dashboard');
+                actualizarKPIs();
+            }
+        }
+
+        function logout() {
+            location.reload();
+        }
+
+        function navIdeador(view) {
+            ['ideadorHome', 'ideadorForm', 'ideadorLista'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            if(view === 'home') document.getElementById('ideadorHome').classList.remove('hidden');
+            if(view === 'formulario') {
+                document.getElementById('ideadorForm').classList.remove('hidden');
+                limpiarFormulario();
+            }
+            if(view === 'lista') {
+                document.getElementById('ideadorLista').classList.remove('hidden');
+                renderIdeadorList();
+            }
+        }
+
+        function navAdmin(view) {
+            ['adminDashboard', 'adminInbox', 'adminRevisadas', 'adminForm'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            if(view === 'dashboard') {
+                document.getElementById('adminDashboard').classList.remove('hidden');
+                actualizarKPIs();
+                actualizarGraficos();
+            }
+            if(view === 'inbox') {
+                document.getElementById('adminInbox').classList.remove('hidden');
+                renderAdminInbox();
+            }
+            if(view === 'revisadas') {
+                document.getElementById('adminRevisadas').classList.remove('hidden');
+                renderAdminRevisadas();
+            }
+            if(view === 'registrar') document.getElementById('adminForm').classList.remove('hidden');
+        }
+
+        // --- LÓGICA DE FORMULARIO (Ideador) ---
+        function simularAutocompletado(valor) {
+            if(valor.length >= 4) {
+                // Simulación de búsqueda en BD
+                document.getElementById('nombreEmpleado').value = "Empleado " + valor;
+                document.getElementById('correoEmpleado').value = "empleado" + valor + "@empresa.com";
+                document.getElementById('direccionEmpleado').value = "Departamento " + valor.charAt(0);
+            } else {
+                ['nombreEmpleado', 'correoEmpleado', 'direccionEmpleado'].forEach(id => document.getElementById(id).value = '');
+            }
+        }
+
+        function limpiarCampo(id) {
+            document.getElementById(id).value = '';
+            document.getElementById(id).focus();
+        }
+
+        function limpiarFormulario() {
+            document.getElementById('formIdea').reset();
+        }
+
+        function cancelarProceso() {
+            Swal.fire({
+                title: '¿Cancelar?',
+                text: "Se perderán los datos no guardados.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                confirmButtonText: 'Sí, cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    navIdeador('home');
+                }
+            });
+        }
+
+        document.getElementById('formIdea').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nuevoId = 'ID-' + (1000 + DB.ideas.length + 1);
+            
+            const nuevaIdea = {
+                id: nuevoId,
+                fecha: new Date().toISOString().split('T')[0],
+                idEmp: document.getElementById('idEmpleado').value,
+                nombre: document.getElementById('nombreEmpleado').value,
+                correo: document.getElementById('correoEmpleado').value,
+                direccion: document.getElementById('direccionEmpleado').value,
+                desc: document.getElementById('descIdea').value,
+                detalle: document.getElementById('detalleIdea').value,
+                status: 'Registrada',
+                clasificacion: '',
+                via: 'Sistema',
+                history: [{
+                    fecha: new Date().toISOString(),
+                    user: document.getElementById('nombreEmpleado').value,
+                    cambio: 'Creación de Registro'
+                }]
             };
-            if(tabMap[tab]) document.getElementById(tabMap[tab]).classList.remove('hidden');
 
-            // Actualizar botones
-            const btnIds = { registro: 'btnTabReg', seguimiento: 'btnTabInd', dashboard: 'btnTabDash', ranking: 'btnTabRank' };
-            Object.values(btnIds).forEach(id => {
-                const el = document.getElementById(id);
-                if(el) {
-                    el.classList.remove('tab-active', 'bg-white', 'text-blue-700');
-                    el.classList.add('bg-slate-200', 'text-slate-600');
-                }
-            });
+            DB.ideas.push(nuevaIdea);
             
-            const activeBtn = document.getElementById(btnIds[tab]);
-            if(activeBtn) {
-                activeBtn.classList.add('tab-active');
-                activeBtn.classList.remove('bg-slate-200', 'text-slate-600');
-            }
+            Swal.fire({
+                title: '¡Idea Registrada!',
+                text: `Tu idea ha sido guardada con el ID: ${nuevoId}`,
+                icon: 'success',
+                confirmButtonColor: '#16a34a'
+            }).then(() => {
+                mostrarDetalle(nuevoId, true); // Mostrar detalle no editable
+                navIdeador('lista'); // Ir a la lista tras cerrar
+            });
+        });
 
-            if(tab !== 'registro') loadProjects(tab);
-        }
-
-        showTab('registro');
-
-        async function loadProjects(targetTab) {
-            if (SCRIPT_URL.includes('ESCRIBE_AQUI')) return;
-            try {
-                const response = await fetch(SCRIPT_URL);
-                const data = await response.json();
-                allProjects = data;
-                
-                if(targetTab === 'dashboard') {
-                    filteredData = data;
-                    applyFilters();
-                } else if(targetTab === 'seguimiento') {
-                    populateLeaderSelector();
-                } else if(targetTab === 'ranking') {
-                    renderRankingSystem();
-                }
-            } catch (error) {
-                console.error("Error cargando datos:", error);
+        // --- LÓGICA DE FORMULARIO (Admin Manual) ---
+        function simularAutocompletadoAdmin(valor) {
+            if(valor.length >= 4) {
+                document.getElementById('adminNomEmp').value = "Empleado " + valor;
+                document.getElementById('adminMailEmp').value = "empleado" + valor + "@empresa.com";
+                document.getElementById('adminDirEmp').value = "Departamento " + valor.charAt(0);
             }
         }
 
-        /* --- LÓGICA DE RANKING Y PUNTOS --- */
-        function calculateLeaderStats(leaderName) {
-            const projects = allProjects.filter(p => (p.lider || p.líder) === leaderName);
-            const totalProjects = projects.length;
-            const totalProgress = projects.reduce((acc, p) => acc + (parseFloat(p.progreso) || 0), 0);
-            const avgProgress = totalProjects > 0 ? (totalProgress / totalProjects).toFixed(1) : 0;
+        document.getElementById('formAdminManual').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nuevoId = 'ID-' + (1000 + DB.ideas.length + 1);
+            const adminUser = "Administrador";
             
-            // FÓRMULA DE PUNTOS: 50 pts por proyecto + 1 pto por cada % de avance acumulado
-            const points = (totalProjects * 50) + Math.round(totalProgress);
-            
-            let level = "NOVATO";
-            if(points > 100) level = "INICIADO";
-            if(points > 300) level = "EJECUTIVO";
-            if(points > 600) level = "ESTRATEGA";
-            if(points > 1000) level = "VISIONARIO";
-            if(points > 2000) level = "LEYENDA";
+            const nuevaIdea = {
+                id: nuevoId,
+                fecha: new Date().toISOString().split('T')[0],
+                idEmp: document.getElementById('adminIdEmp').value,
+                nombre: document.getElementById('adminNomEmp').value,
+                correo: document.getElementById('adminMailEmp').value,
+                direccion: document.getElementById('adminDirEmp').value,
+                desc: document.getElementById('adminDesc').value,
+                detalle: document.getElementById('adminDetalle').value,
+                status: 'Revisada', // REQUERIMIENTO: Admin guarda como Revisada
+                clasificacion: 'Manual Admin',
+                via: document.getElementById('adminVia').value,
+                history: [{
+                    fecha: new Date().toISOString(),
+                    user: adminUser,
+                    cambio: 'Registro Manual Administrativo'
+                }]
+            };
 
-            return { totalProjects, avgProgress, points, level, projects };
-        }
+            DB.ideas.push(nuevaIdea);
+            DB.logs.push({user: adminUser, action: `Registro Manual ${nuevoId}`});
 
-        function renderRankingSystem() {
-            const leaders = [...new Set(allProjects.map(p => p.lider || p.líder))].filter(Boolean);
-            const rankingData = leaders.map(l => {
-                const stats = calculateLeaderStats(l);
-                return { name: l, ...stats };
-            }).sort((a, b) => b.points - a.points); // Ordenar mayor a menor
-
-            // Renderizar Podio
-            const podium = document.getElementById('rankingPodium');
-            podium.innerHTML = '';
-            
-            // Orden visual del podio: 2do - 1ro - 3ro
-            const podiumOrder = [1, 0, 2]; 
-            const colors = ['bg-slate-300', 'bg-yellow-400', 'bg-orange-300'];
-            const heights = ['h-32', 'h-48', 'h-24'];
-            
-            podiumOrder.forEach((idx, i) => {
-                if(rankingData[idx]) {
-                    const l = rankingData[idx];
-                    podium.innerHTML += `
-                        <div class="flex flex-col items-center animate-slide" style="animation-delay: ${i*0.1}s">
-                            <div class="font-bold text-slate-600 mb-2 text-sm text-center">${l.name.split(' ')[0]}</div>
-                            <div class="${colors[i]} ${heights[i]} w-24 rounded-t-xl shadow-lg flex items-end justify-center pb-4 relative">
-                                <span class="text-white font-black text-2xl shadow-sm">#${idx + 1}</span>
-                                <div class="absolute -top-4 bg-white px-2 py-1 rounded-full text-xs font-bold shadow">${l.points} pts</div>
-                            </div>
-                        </div>
-                    `;
-                }
+            Swal.fire({
+                title: 'Registrada',
+                text: 'La idea se guardó con estatus Revisada.',
+                icon: 'success'
             });
+            document.getElementById('formAdminManual').reset();
+            navAdmin('dashboard');
+        });
 
-            // Renderizar Tabla
-            const tbody = document.getElementById('rankingTableBody');
+        // --- RENDERIZADO DE LISTAS ---
+        function renderIdeadorList() {
+            const tbody = document.getElementById('tablaMisIdeas');
             tbody.innerHTML = '';
-            rankingData.forEach((r, index) => {
+            // Filtramos asumiendo que el usuario es el del ejemplo "1010" o mostramos todas para el demo
+            const misIdeas = DB.ideas; // En prod, filtrar por idEmp
+
+            misIdeas.forEach(idea => {
                 tbody.innerHTML += `
-                    <tr class="border-b hover:bg-slate-50 transition-colors">
-                        <td class="p-4 font-bold text-slate-500">#${index + 1}</td>
-                        <td class="p-4 font-bold text-slate-800">${r.name}</td>
-                        <td class="p-4 text-slate-600">${r.totalProjects}</td>
-                        <td class="p-4">
-                            <div class="w-full bg-slate-200 rounded-full h-2.5 max-w-[100px]">
-                                <div class="bg-blue-600 h-2.5 rounded-full" style="width: ${r.avgProgress}%"></div>
-                            </div>
-                            <span class="text-xs text-slate-500">${r.avgProgress}%</span>
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="p-4 font-bold text-slate-600">${idea.id}</td>
+                        <td class="p-4 text-slate-500">${idea.fecha}</td>
+                        <td class="p-4 font-medium text-slate-800">${idea.desc}</td>
+                        <td class="p-4"><span class="px-2 py-1 rounded text-xs font-bold ${getColorStatus(idea.status)}">${idea.status}</span></td>
+                        <td class="p-4 text-center">
+                            <button onclick="mostrarDetalle('${idea.id}')" class="text-blue-600 hover:text-blue-800">👁️ Ver</button>
                         </td>
-                        <td class="p-4 text-right font-black text-blue-700">${r.points}</td>
                     </tr>
                 `;
             });
         }
 
-        function populateLeaderSelector() {
-            const selector = document.getElementById('leaderSelector');
-            const leaders = [...new Set(allProjects.map(p => p.lider || p.líder))].filter(Boolean);
+        function renderAdminInbox() {
+            const tbody = document.getElementById('tablaInbox');
+            tbody.innerHTML = '';
+            const pendientes = DB.ideas.filter(i => i.status === 'Registrada');
             
-            // Mantener selección si existe
-            const currentVal = selector.value;
-            selector.innerHTML = '<option value="">Seleccione un Líder...</option>';
-            leaders.forEach(l => {
-                selector.innerHTML += `<option value="${l}">${l}</option>`;
-            });
-            if(currentVal) selector.value = currentVal;
-        }
-
-        function updateLeaderDashboard() {
-            const leaderName = document.getElementById('leaderSelector').value;
-            if(!leaderName) {
-                document.getElementById('leaderContent').classList.add('hidden');
+            if(pendientes.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-slate-400">No hay ideas nuevas pendientes.</td></tr>';
                 return;
             }
 
-            document.getElementById('leaderContent').classList.remove('hidden');
+            pendientes.forEach(idea => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-yellow-50 transition-colors">
+                        <td class="p-4 text-slate-500">${idea.fecha}</td>
+                        <td class="p-4 font-bold text-slate-700">${idea.nombre}</td>
+                        <td class="p-4 text-slate-600">${idea.desc}</td>
+                        <td class="p-4 text-center">
+                            <button onclick="mostrarDetalle('${idea.id}', false, true)" class="bg-blue-600 text-white px-3 py-1 rounded shadow text-xs hover:bg-blue-700">Revisar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderAdminRevisadas() {
+            const tbody = document.getElementById('tablaRevisadas');
+            tbody.innerHTML = '';
+            const revisadas = DB.ideas.filter(i => i.status !== 'Registrada');
+
+            revisadas.forEach(idea => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-green-50 transition-colors">
+                        <td class="p-4 text-slate-500">${idea.fecha}</td>
+                        <td class="p-4 font-bold text-slate-700">${idea.nombre}</td>
+                        <td class="p-4 text-slate-600">${idea.desc}</td>
+                        <td class="p-4 text-xs font-bold text-purple-600">${idea.clasificacion || '-'}</td>
+                        <td class="p-4 text-center">
+                            <button onclick="mostrarDetalle('${idea.id}', false, true)" class="text-slate-400 hover:text-blue-600">📝 Editar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function getColorStatus(status) {
+            if(status === 'Registrada') return 'bg-yellow-100 text-yellow-800';
+            if(status === 'Revisada') return 'bg-green-100 text-green-800';
+            return 'bg-slate-100 text-slate-800';
+        }
+
+        // --- MODAL Y DETALLE ---
+        function mostrarDetalle(id, soloLectura = false, modoAdmin = false) {
+            const idea = DB.ideas.find(i => i.id === id);
+            if(!idea) return;
+
+            currentIdeaIdEditing = id;
+            document.getElementById('modalId').innerText = idea.id;
+            document.getElementById('mFecha').innerText = idea.fecha;
+            document.getElementById('mUsuario').innerText = idea.nombre;
+            document.getElementById('mDesc').innerText = idea.desc;
+            document.getElementById('mDetalle').innerText = idea.detalle;
+
+            const adminPanel = document.getElementById('adminControls');
             
-            // Usar la nueva función centralizada
-            const stats = calculateLeaderStats(leaderName);
-            const leaderProjects = stats.projects;
-
-            // Actualizar Tarjetas
-            document.getElementById('indTotal').innerText = stats.totalProjects;
-            const pres = leaderProjects.reduce((acc, p) => acc + (parseFloat(p.presupuesto) || 0), 0);
-            document.getElementById('indPres').innerText = '$' + pres.toLocaleString();
-            document.getElementById('indProg').innerText = stats.avgProgress + '%';
-
-            // Actualizar Gamificación Personal
-            document.getElementById('leaderLevel').innerText = stats.level;
-            document.getElementById('leaderPoints').innerText = stats.points;
-
-            renderLeaderCharts(leaderProjects);
-        }
-
-        function renderLeaderCharts(data) {
-            if(charts.indBar) charts.indBar.destroy();
-            if(charts.indPie) charts.indPie.destroy();
-
-            const labels = data.map(p => (p.proyecto || 'S/N').substring(0, 15) + '...');
-            const progressValues = data.map(p => p.progreso || 0);
-            const budgetValues = data.map(p => p.presupuesto || 0);
-
-            charts.indBar = new Chart(document.getElementById('chartIndProgreso'), {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: '% de Avance',
-                        data: progressValues,
-                        backgroundColor: '#3b82f6'
-                    }]
-                },
-                options: { responsive: true, plugins: { title: { display: true, text: 'Progreso por Proyecto' } } }
-            });
-
-            charts.indPie = new Chart(document.getElementById('chartIndPresupuesto'), {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: budgetValues,
-                        backgroundColor: ['#1d4ed8', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
-                    }]
-                },
-                options: { responsive: true, plugins: { title: { display: true, text: 'Presupuesto por Proyecto' } } }
-            });
-        }
-
-        function applyFilters() {
-            const reg = document.getElementById('fRegional').value;
-            const inicio = document.getElementById('fInicio').value;
-
-            filteredData = allProjects.filter(p => {
-                const matchReg = reg === "Todas" || p.regional === reg;
-                let matchFecha = true;
-                if(inicio && p.fecha) matchFecha = new Date(p.fecha) >= new Date(inicio);
-                return matchReg && matchFecha;
-            });
-            updateGeneralDashboardUI();
-        }
-
-        function updateGeneralDashboardUI() {
-            const total = filteredData.length;
-            const presupuestoTotal = filteredData.reduce((acc, p) => acc + (parseFloat(p.presupuesto) || 0), 0);
-            const avanceMedio = total > 0 ? (filteredData.reduce((acc, p) => acc + (parseFloat(p.progreso) || 0), 0) / total).toFixed(1) : 0;
-
-            document.getElementById('kpiTotal').innerText = total;
-            document.getElementById('kpiPresupuesto').innerText = '$' + presupuestoTotal.toLocaleString();
-            document.getElementById('kpiAvance').innerText = avanceMedio + '%';
-            renderGeneralCharts();
-        }
-
-        function renderGeneralCharts() {
-            const regData = {};
-            const prioData = { 'Alta': 0, 'Media': 0, 'Baja': 0 };
-            filteredData.forEach(p => {
-                regData[p.regional] = (regData[p.regional] || 0) + 1;
-                if(prioData[p.prioridad] !== undefined) prioData[p.prioridad]++;
-            });
-
-            if(charts.reg) charts.reg.destroy();
-            if(charts.prio) charts.prio.destroy();
-
-            charts.reg = new Chart(document.getElementById('chartRegional'), {
-                type: 'doughnut',
-                data: { 
-                    labels: Object.keys(regData), 
-                    datasets: [{ 
-                        data: Object.values(regData), 
-                        backgroundColor: ['#1d4ed8', '#3b82f6', '#60a5fa', '#93c5fd', '#2dd4bf', '#818cf8', '#fbbf24'] 
-                    }] 
-                },
-                options: { plugins: { title: { display: true, text: 'Proyectos por Regional' } } }
-            });
-
-            charts.prio = new Chart(document.getElementById('chartPrioridad'), {
-                type: 'bar',
-                data: { labels: Object.keys(prioData), datasets: [{ label: 'Prioridad', data: Object.values(prioData), backgroundColor: '#1d4ed8' }] }
-            });
-        }
-
-        function resetFilters() {
-            document.getElementById('fRegional').value = "Todas";
-            document.getElementById('fInicio').value = "";
-            applyFilters();
-        }
-
-        document.getElementById('innovationForm').addEventListener('submit', async e => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = 'PROCESANDO...';
-            btn.disabled = true;
-            try {
-                await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(Object.fromEntries(new FormData(e.target))) });
-                alert('¡Idea guardada con éxito!');
-                e.target.reset();
-                document.getElementById('rangeValue').innerText = '0%';
-            } catch (e) {
-                alert('Error al guardar');
-            } finally {
-                btn.innerText = '💾 GUARDAR PROYECTO';
-                btn.disabled = false;
+            if(modoAdmin && currentUser === 'admin') {
+                adminPanel.classList.remove('hidden');
+                document.getElementById('mAdminClasif').value = idea.clasificacion || "";
+                document.getElementById('mAdminStatus').value = idea.status;
+            } else {
+                adminPanel.classList.add('hidden');
             }
-        });
+
+            document.getElementById('modalDetalle').classList.remove('hidden');
+            document.getElementById('modalDetalle').classList.add('flex');
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalDetalle').classList.add('hidden');
+            document.getElementById('modalDetalle').classList.remove('flex');
+            currentIdeaIdEditing = null;
+        }
+
+        function guardarRevisionAdmin() {
+            if(!currentIdeaIdEditing) return;
+            const idea = DB.ideas.find(i => i.id === currentIdeaIdEditing);
+            const nuevoStatus = document.getElementById('mAdminStatus').value;
+            const nuevaClasif = document.getElementById('mAdminClasif').value;
+
+            // Histórico
+            if(idea.status !== nuevoStatus || idea.clasificacion !== nuevaClasif) {
+                idea.history.push({
+                    fecha: new Date().toISOString(),
+                    user: 'Administrador',
+                    cambio: `Status: ${nuevoStatus}, Clasif: ${nuevaClasif}`
+                });
+                DB.logs.push({user: 'Administrador', action: `Revisión ${idea.id}`});
+            }
+
+            idea.status = nuevoStatus;
+            idea.clasificacion = nuevaClasif;
+
+            Swal.fire('Guardado', 'La revisión ha sido actualizada', 'success');
+            cerrarModal();
+            // Refrescar vistas admin
+            actualizarKPIs();
+            renderAdminInbox();
+            renderAdminRevisadas();
+        }
+
+        // --- DASHBOARD CHARTS ---
+        let charts = {};
+
+        function actualizarKPIs() {
+            document.getElementById('kpiTotalIdeas').innerText = DB.ideas.length;
+            document.getElementById('kpiPendientes').innerText = DB.ideas.filter(i => i.status === 'Registrada').length;
+            document.getElementById('kpiAprobadas').innerText = DB.ideas.filter(i => i.status === 'Revisada').length;
+            // Usuarios únicos
+            const users = new Set(DB.ideas.map(i => i.nombre));
+            document.getElementById('kpiUsuarios').innerText = users.size;
+        }
+
+        function actualizarGraficos() {
+            const ctxStatus = document.getElementById('chartStatus');
+            const ctxClasif = document.getElementById('chartClasificacion');
+            
+            if(!ctxStatus || !ctxClasif) return;
+
+            // Datos Status
+            const statusCounts = {};
+            DB.ideas.forEach(i => { statusCounts[i.status] = (statusCounts[i.status] || 0) + 1; });
+
+            // Datos Clasificación
+            const clasifCounts = {};
+            DB.ideas.forEach(i => { 
+                const c = i.clasificacion || 'Sin Clasificar';
+                clasifCounts[c] = (clasifCounts[c] || 0) + 1; 
+            });
+
+            if(charts.status) charts.status.destroy();
+            if(charts.clasif) charts.clasif.destroy();
+
+            charts.status = new Chart(ctxStatus, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(statusCounts),
+                    datasets: [{
+                        data: Object.values(statusCounts),
+                        backgroundColor: ['#facc15', '#22c55e', '#3b82f6']
+                    }]
+                }
+            });
+
+            charts.clasif = new Chart(ctxClasif, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(clasifCounts),
+                    datasets: [{
+                        label: 'Cantidad',
+                        data: Object.values(clasifCounts),
+                        backgroundColor: '#8b5cf6'
+                    }]
+                }
+            });
+        }
+
+        // Iniciar
+        initDB();
+
     </script>
 </body>
 </html>

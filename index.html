@@ -397,7 +397,7 @@
             });
         }
 
-        // --- SISTEMA DE LOGIN (FIXED) ---
+        // --- SISTEMA DE LOGIN (FIXED & SECURED VISUALLY) ---
         function login(role) {
             // Caso Ideador: Pase directo
             if (role === 'ideador') {
@@ -412,8 +412,8 @@
                     Swal.fire({
                         title: 'Seguridad',
                         input: 'password',
-                        inputLabel: 'Ingrese clave admin (1234)',
-                        inputPlaceholder: 'Clave...',
+                        inputLabel: 'Ingrese su clave de administrador', // TEXTO MODIFICADO
+                        inputPlaceholder: 'Su clave...',
                         confirmButtonText: 'Entrar',
                         confirmButtonColor: '#0ea5e9', // Sky Blue
                         showCancelButton: true,
@@ -429,7 +429,7 @@
                     });
                 } else {
                     // FALLBACK: Si no hay internet o falla la librería, usar prompt nativo
-                    const pass = prompt("Ingrese clave de administrador (1234):");
+                    const pass = prompt("Ingrese clave de administrador:"); // TEXTO MODIFICADO
                     if (pass === '1234') {
                         ejecutarLogin(role);
                     } else if (pass !== null) {
